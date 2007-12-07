@@ -1,0 +1,77 @@
+
+= Unobtrusive Date-Picker Widget Plugin
+
+This is a helper for creating a date or date-time picker that uses the 
+{Unobtrusive Date-Picker Widgit}[http://www.frequency-decoder.com/2006/10/02/unobtrusive-date-picker-widgit-update]
+to add a clickable calendar image that will bring up a calendar picker if javascript is available.
+
+The two main form helper methods are <tt>unobtrusive_date_picker</tt> and <tt>unobtrusive_datetime_picker</tt>.
+
+It also uses the {12 Hour Time plugin}[http://code.google.com/p/rails-twelve-hour-time-plugin/] 
+so that 12 Hour times can be processed by Active Record.
+
+You may want to consider compressing the javascript files with {Dean Edward's Packer}[http://dean.edwards.name/packer/] 
+or {Douglas Crockford's JSMin}[http://www.crockford.com/javascript/jsmin.html] before deploying your application.
+
+
+== Usage
+The main options are <tt>start_year</tt>, <tt>end_year</tt>, which control the year range.
+
+==== Example:
+   <% form_for :article, :url => { :action => @form_action, :id => @article } do |f| %>
+   <fieldset>
+      ...
+      <label>Date: <%= f.unobtrusive_datetime_picker :date %></label><br />
+      ...
+   </fieldset>
+   <% end %>
+
+==== Produces (Current date when output: 12/6/07):
+   <form action="/form/create" method="post">
+      <fieldset>
+         
+         <label>Date: 
+   	      <select id="article_date-dd" name="article[date(3i)]">
+               <option value="1">1</option>
+               ...
+               <option value="31">31</option>
+            </select>
+            <select id="article_date-mm" name="article[date(2i)]">
+               <option value="1">January</option>
+               ...
+               <option value="12" selected="selected">December</option>
+            </select>
+            <select id="article_date" name="article[date(1i)]" class="split-date">
+               <option value="2002">2002</option>
+               ...
+               <option value="2012">2012</option>
+            </select>
+             &nbsp; 
+            <select id="article_date_4i" name="article[date(4i)]">
+               <option value="1">1</option>
+               ...
+               <option value="12">12</option>
+            </select>
+             : 
+            <select id="article_date_5i" name="article[date(5i)]">
+               <option value="00">00</option>
+               ...
+               <option value="59">59</option>
+            </select>
+            <select id="article_date_6i" name="article[date(6i)]">
+               <option value="AMPM>AMPM</option>
+               <option value="AMPM>AMPM</option>
+            </select>
+         </label><br />
+            
+      </fieldset>
+   </form>
+
+
+
+=== LICENSE
+
+See MIT-LICENSE file for copyright and licensing information for this plugin.
+
+Unobtrusive Date-Picker Widgit is provided under the Creative Commons Attribution-ShareAlike 2.5 license (http://creativecommons.org/licenses/by-sa/2.5/) by frequency-decoder.com
+
