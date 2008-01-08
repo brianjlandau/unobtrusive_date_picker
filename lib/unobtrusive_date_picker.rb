@@ -33,9 +33,9 @@ module UnobtrusiveDatePicker
          
          ampm_options = []
          ampm.each { |meridiem| 
-            ampm_options << ((val == ampm) ? 
-            %(<option value="#{ampm} selected="selected">#{ampm}</option>\n) :
-            %(<option value="#{ampm}>#{ampm}</option>\n)
+            ampm_options << ((val == ampmeridiemm) ? 
+            %(<option value="#{meridiem} selected="selected">#{meridiem}</option>\n) :
+            %(<option value="#{meridiem}>#{meridiem}</option>\n)
             )
          }
          
