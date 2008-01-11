@@ -172,10 +172,10 @@ module UnobtrusiveDatePicker
       # This will add the necessary <link> and <script> tags to include the necessary stylesheet and
       # javascripts.
       #
-      def unobtrusive_datepicker_includes
+      def unobtrusive_datepicker_includes(options = {})
          output = []
-         output << javascript_include_tag('datepicker')
-         output << stylesheet_link_tag('datepicker')
+         output << javascript_include_tag('datepicker', options)
+         output << stylesheet_link_tag('datepicker', options)
          output * "\n"
       end
    end
