@@ -1,5 +1,5 @@
 /*
-        DatePicker v4.2 by frequency-decoder.com
+        DatePicker v4.4 by frequency-decoder.com
 
         Released under a creative commons Attribution-ShareAlike 2.5 license (http://creativecommons.org/licenses/by-sa/2.5/)
 
@@ -540,6 +540,59 @@ function datePicker(options) {
                 };
                 return false;
         };
+        o.createButton = function() {
+                if(o.staticPos) { return; };
+                
+                var but;
+                
+                if(!document.getElementById("fd-but-" + o.id)) {
+                        var inp = o.getElem();
+                        
+                        but = document.createElement('a');
+                        but.href = "#";
+
+                        var span = document.createElement('span');
+                        span.appendChild(document.createTextNode(String.fromCharCode( 160 )));
+
+                        but.className = "date-picker-control";
+                        but.title = (typeof(fdLocale) == "object" && options.locale && fdLocale.titles.length > 5) ? fdLocale.titles[5] : "";
+
+                        but.id = "fd-but-" + o.id;
+                        but.appendChild(span);
+
+                        if(inp.nextSibling) {
+                                inp.parentNode.insertBefore(but, inp.nextSibling);
+                        } else {
+                                inp.parentNode.appendChild(but);
+                        };
+                } else {
+                        but = document.getElementById("fd-but-" + o.id);
+                };
+
+                but.onclick = but.onpress = function(e) {
+                        e = e || window.event;
+                        var inpId = this.id.replace('fd-but-','');
+                        try { var dp = datePickerController.getDatePicker(inpId); } catch(err) { return false; };
+
+                        if(e.type == "press") {
+                                var kc = e.keyCode != null ? e.keyCode : e.charCode;
+                                if(kc != 13) { return true; };
+                                if(dp.visible) {
+                                        hideAll();
+                                        return false;
+                                };
+                        };
+
+                        if(!dp.visible) {
+                                datePickerController.hideAll(inpId);
+                                dp.show();
+                        } else {
+                                datePickerController.hideAll();
+                        };
+                        return false;
+                };
+                but = null;
+        },
         o.create = function() {
                 
                 function createTH(details) {
@@ -703,9 +756,10 @@ function datePicker(options) {
                 o.updateTableHeaders();
                 
                 tableBody = tableHead = tr = createThAndButton = createTH = null;
-                o.created = true;
-                
+
                 if(o.low && o.high && (o.high - o.low < 7)) { o.equaliseDates(); };
+                
+                o.created = true;
                 
                 if(o.staticPos) {
                         var yyN = document.getElementById(o.id);
@@ -716,10 +770,10 @@ function datePicker(options) {
                                 datePickerController.addEvent(mmN, "change", o.changeHandler);
                                 datePickerController.addEvent(ddN, "change", o.changeHandler);
                         };
-                };
-
-                if(o.staticPos) { o.show(); }
-                else {
+                        
+                        o.show();
+                } else {
+                        o.createButton();
                         o.resize();
                         o.fade();
                 };
@@ -740,7 +794,6 @@ function datePicker(options) {
 
                 if(!o.splitDate) {
                         var date = datePickerController.dateFormat(elem.value, o.format.search(/m-d-y/i) != -1);
-
                 } else {
                         var mmN = document.getElementById(o.id+'-mm');
                         var ddN = document.getElementById(o.id+'-dd');
@@ -764,21 +817,29 @@ function datePicker(options) {
                 var dpm = datePicker.getDaysPerMonth(m, y);
                 if(d > dpm) d = dpm;
 
-                if(new Date( y, m, d ) == 'Invalid Date' || new Date( y, m, d ) == 'NaN') {
-
+                if(new Date(y, m, d) == 'Invalid Date' || new Date(y, m, d) == 'NaN') {
                         badDate = true;
                         o.date = new Date();
                         o.date.setHours(5);
                         return;
                 };
 
-                o.date = new Date( y, m, d );
-
+                o.date = new Date(y, m, d);
                 o.date.setHours(5);
 
                 if(!badDate) o.dateSet = new Date(o.date);
                 m2c = null;
         };
+        o.setSelectIndex = function(elem, indx) {
+                var len = elem.options.length;
+                indx = Number(indx);
+                for(var opt = 0; opt < len; opt++) {
+                        if(elem.options[opt].value == indx) {
+                                elem.selectedIndex = opt;
+                                return;
+                        };
+                };
+        },
         o.returnFormattedDate = function() {
 
                 var elem = o.getElem();
@@ -797,24 +858,26 @@ function datePicker(options) {
                                 var mmE = document.getElementById(o.id+"-mm");
 
                                 if(ddE.tagName.toLowerCase() == "input") { ddE.value = d; }
-                                else { ddE.selectedIndex = d - 1; };
+                                else { o.setSelectIndex(ddE, d); /*ddE.selectedIndex = d - 1;*/ };
                                 
                                 if(mmE.tagName.toLowerCase() == "input") { mmE.value = m; }
-                                else { mmE.selectedIndex = m - 1; };
+                                else { o.setSelectIndex(mmE, m); /*mmE.selectedIndex = m - 1;*/ };
                                 
                                 if(elem.tagName.toLowerCase() == "input") elem.value = yyyy;
                                 else {
+                                        o.setSelectIndex(elem, yyyy); /*
                                         for(var opt = 0; opt < elem.options.length; opt++) {
                                                 if(elem.options[opt].value == yyyy) {
                                                         elem.selectedIndex = opt;
                                                         break;
                                                 };
                                         };
+                                        */
                                 };
                         } else {
                                 elem.value = o.format.replace('y',yyyy).replace('m',m).replace('d',d).replace(/-/g,o.divider);
                         };
-                        if(!elem.type || elem.type && elem.type != "hidden") elem.focus();
+                        if(!elem.type || elem.type && elem.type != "hidden"){ elem.focus(); }
                         if(o.staticPos) {
                                 o.dateSet = new Date( o.date );
                                 o.updateTable();
@@ -830,7 +893,6 @@ function datePicker(options) {
                         };
                 };
         };
-
         o.disableTodayButton = function() {
                 var today = new Date();
                 document.getElementById(o.id + "-today-but").className = document.getElementById(o.id + "-today-but").className.replace("fd-disabled", "");
@@ -841,7 +903,6 @@ function datePicker(options) {
                         document.getElementById(o.id + "-today-but").onclick = o.events.gotoToday;
                 };
         };
-
         o.updateTableHeaders = function() {
                 var d, but;
                 var ths = o.ths;
@@ -969,9 +1030,10 @@ function datePicker(options) {
                         
                                 if(i > firstColIndex && i <= (firstColIndex + dpm)) {
                                         dt = i - firstColIndex;
+
                                         tmpDate.setDate(dt);
                                         td.appendChild(document.createTextNode(dt));
-
+                                        
                                         if(o.outOfRange(tmpDate)) {
                                                 td.setAttribute(c, "out-of-range");
                                         } else {
@@ -987,7 +1049,7 @@ function datePicker(options) {
                                                         cName.push("date-picker-selected-date");
                                                 };
                                                 
-                                                if(o.disableDays[weekDay] || stub + String(dt) in disabledDates) {
+                                                if(o.disableDays[weekDay] || stub + String(dt < 10 ? "0" + dt : dt) in disabledDates) {
                                                         cName.push("day-disabled");
                                                 } else if(o.highlightDays[weekDay]) {
                                                         cName.push("date-picker-highlight");
@@ -1075,7 +1137,7 @@ function datePicker(options) {
                 o.fade();
                 o.visible = false;
                 var elem = o.getElem();
-                if(elem) elem.focus();
+                if(!elem.type || elem.type && elem.type != "hidden") { elem.focus(); };
         };
         o.destroy = function() {
                 // Cleanup for Internet Explorer
@@ -1128,10 +1190,13 @@ function datePicker(options) {
                         butt.onclick = butt.onpress = null;
                 };
                 
+                if(o.div && o.div.parentNode) {
+                        o.div.parentNode.removeChild(o.div);
+                };
+                
                 o.titleBar = o.table = o.div = null;
                 o = null;
         };
-
         o.create();
 };
 
@@ -1158,7 +1223,6 @@ datePickerController = function() {
                         };
                 } catch(err) {};
         };
-
         var hideAll = function(exception) {
                 var dp;
                 for(dp in datePickers) {
@@ -1171,13 +1235,10 @@ datePickerController = function() {
                 var dp;
                 for(dp in datePickers) {
                         if(!document.getElementById(datePickers[dp].id)) {
-                                dpElem = document.getElementById("fd-"+datePickers[dp].id);
+                                if(!datePickers[dp].created) continue;
                                 datePickers[dp].destroy();
                                 datePickers[dp] = null;
                                 delete datePickers[dp];
-                                if(dpElem) {
-                                        dpElem.parentNode.removeChild(dpElem);
-                                };
                         };
                 };
         };
@@ -1236,18 +1297,27 @@ datePickerController = function() {
                 return nodeList;
         };
         var addDatePicker = function(inpId, options) {
-                if(!(inpId in datePickers)) datePickers[inpId] = new datePicker(options);
+                if(!(inpId in datePickers)) {
+                        datePickers[inpId] = new datePicker(options);
+                };
         };
         var getDatePicker = function(inpId) {
-                if(!(inpId in datePickers)) throw "No datePicker has been created for the form element with an id of '" + inpId.toString() + "'";
+                if(!(inpId in datePickers)) { throw "No datePicker has been created for the form element with an id of '" + inpId.toString() + "'"; };
                 return datePickers[inpId];
         };
-        var create = function() {
+        var grepRangeLimits = function(sel) {
+                var range = [];
+                for(var i = 0; i < sel.options.length; i++) {
+                        if(sel.options[i].value.search(/^\d\d\d\d$/) == -1) { continue; };
+                        if(!range[0] || Number(sel.options[i].value) < range[0]) { range[0] = Number(sel.options[i].value); };
+                        if(!range[1] || Number(sel.options[i].value) > range[1]) { range[1] = Number(sel.options[i].value); };
+                };
+                return range;
+        };
+        var create = function(inp) {
                 if(!(typeof document.createElement != "undefined" && typeof document.documentElement != "undefined" && typeof document.documentElement.offsetWidth == "number")) return;
 
-                cleanUp();
-                
-                var inputs  = joinNodeLists(document.getElementsByTagName('input'), document.getElementsByTagName('select'));
+                var inputs  = (inp && inp.tagName) ? [inp] : joinNodeLists(document.getElementsByTagName('input'), document.getElementsByTagName('select'));
                 var regExp1 = /disable-days-([1-7]){1,6}/g;             // the days to disable
                 var regExp2 = /no-transparency/g;                       // do not use transparency effects
                 var regExp3 = /highlight-days-([1-7]){1,7}/g;           // the days to highlight in red
@@ -1262,8 +1332,10 @@ datePickerController = function() {
                 for(var i=0, inp; inp = inputs[i]; i++) {
                         if(inp.className && (inp.className.search(regExp6) != -1 || inp.className.search(/split-date/) != -1) && ((inp.tagName.toLowerCase() == "input" && (inp.type == "text" || inp.type == "hidden")) || inp.tagName.toLowerCase() == "select")) {
 
-                                //if(!inp.id) { inp.id = "fdDatePicker-" + datePickerController.uniqueId++; };
+                                if(inp.id && document.getElementById('fd-'+inp.id)) { continue; };
+                                
                                 if(!inp.id) { inp.id = "fdDatePicker-" + uniqueId++; };
+                                
                                 var options = {
                                         id:inp.id,
                                         low:"",
@@ -1343,76 +1415,12 @@ datePickerController = function() {
 
                                 // Always round lower & higher limits if a selectList involved
                                 if(inp.tagName.search(/select/i) != -1) {
-                                        options.low  = options.low  ? Math.min(inp.options[0].value, inp.options[inp.options.length - 1].value) + String(options.low).substr(4,4)  : datePickerController.dateFormat(Math.min(inp.options[0].value, inp.options[inp.options.length - 1].value) + "/01/01");
-                                        options.high = options.high ? Math.max(inp.options[0].value, inp.options[inp.options.length - 1].value) + String(options.high).substr(4,4) : datePickerController.dateFormat(Math.max(inp.options[0].value, inp.options[inp.options.length - 1].value) + "/12/31");
+                                        var range = grepRangeLimits(inp);
+                                        options.low  = options.low  ? range[0] + String(options.low).substr(4,4)  : datePickerController.dateFormat(range[0] + "/01/01");
+                                        options.high = options.high ? range[1] + String(options.low).substr(4,4)  : datePickerController.dateFormat(range[1] + "/12/31");
                                 };
 
-                                // Datepicker is already created so reset it's defaults
-                                if(document.getElementById('fd-'+inp.id)) {
-                                        for(var opt in options) {
-                                                datePickers[inp.id].defaults[opt] = options[opt];
-                                        };
-                                        datePickers[inp.id].enabledDays = datePickers[inp.id].disabledDays = [];
-                                };
-                                
-                                // Create the button (if needs be)
-                                var but;
-                                
-                                if(!options.staticPos && !document.getElementById("fd-but-" + inp.id)) {
-                                        but = document.createElement('a');
-                                        but.href = "#";
-                                        
-                                        var span = document.createElement('span');
-                                        span.appendChild(document.createTextNode(String.fromCharCode( 160 )));
-
-                                        but.className = "date-picker-control";
-                                        but.title = (typeof(fdLocale) == "object" && options.locale && fdLocale.titles.length > 5) ? fdLocale.titles[5] : "";
-                                        
-                                        but.id = "fd-but-" + inp.id;
-                                        but.appendChild(span);
-                                
-                                        if(inp.nextSibling) {
-                                                inp.parentNode.insertBefore(but, inp.nextSibling);
-                                        } else {
-                                                inp.parentNode.appendChild(but);
-                                        };
-                                } else if(!options.staticPos) {
-                                        but = document.getElementById("fd-but-" + inp.id);
-                                };
-                                
-                                // Add button events
-                                if(!options.staticPos) {
-                                        but.onclick = but.onpress = function(e) {
-                                                e = e || window.event;
-                                                var inpId = this.id.replace('fd-but-','');
-                                                try { var dp = datePickerController.getDatePicker(inpId); } catch(err) { return false; };
-
-                                                if(e.type == "press") {
-                                                        var kc = e.keyCode != null ? e.keyCode : e.charCode;
-                                                        if(kc != 13) return true;
-                                                        if(dp.visible) {
-                                                                hideAll();
-                                                                return false;
-                                                        };
-                                                };
-                                                
-                                                if(!dp.visible) {
-                                                        datePickerController.hideAll(inpId);
-                                                        dp.show();
-                                                } else {
-                                                        datePickerController.hideAll();
-                                                };
-                                                return false;
-                                        };
-                                };
-                                
-                                // Create the datePicker (if needs be)
-                                if(!document.getElementById('fd-'+inp.id)) {
-                                        //datePickerController.datePickers[inp.id] = new datePicker(options);
-                                        datePickers[inp.id] = new datePicker(options);
-                                };
-
-                                but = null;
+                                addDatePicker(inp.id, options);
                         };
                 };
         }
@@ -1430,7 +1438,6 @@ datePickerController = function() {
                 hideAll:hideAll
         };
 }();
-
 
 })();
 

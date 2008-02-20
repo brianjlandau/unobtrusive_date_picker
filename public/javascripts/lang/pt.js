@@ -26,15 +26,25 @@ var fdLocale = {
 
         dayAbbr:[],
         */
+        dayAbbr:["Seg",
+                 "Ter",
+                 "Qua",
+                 "Qui",
+                 "Sex",
+                 "Sab",
+                 "Dom"],
 
         /* Only stipulate the firstDayOfWeek should the first day not be Monday
 
         firstDayOfWeek:0,
         */
+        firstDayOfWeek:6,
         titles:[
                 "M\u00EAs anterior",
                 "Pr\u00F3ximo m\u00EAs",
                 "Ano anterior",
-                "Pr\u00F3ximo ano"
+                "Pr\u00F3ximo ano",
+                "Hoje",
+                "Exibir calend\u00E1rio"
                 ]
 };
