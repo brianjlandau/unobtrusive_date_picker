@@ -1,7 +1,6 @@
 require 'date'
 require 'time'
 
-
 module UnobtrusiveDatePicker
    
    # == Unobtrusive Date-Picker Helper
