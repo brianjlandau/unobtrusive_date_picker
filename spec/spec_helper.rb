@@ -3,8 +3,8 @@ PLUGIN_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 require 'rubygems'
 require 'spec'
 require 'active_support'
-require 'action_controller'
 require 'action_view'
+require 'action_controller'
 require File.join(PLUGIN_ROOT, 'init.rb')
 
 ActionController::Base.perform_caching = false
