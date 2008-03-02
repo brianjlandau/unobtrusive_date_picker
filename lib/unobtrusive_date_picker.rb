@@ -12,6 +12,10 @@ module UnobtrusiveDatePicker
    #
    module UnobtrusiveDatePickerHelper
       
+      DATEPICKER_DEFAULT_NAME_ID_SUFFIXES = {:year  => {:id => '',   :name => 'year'},
+                                             :month => {:id => 'mm', :name => 'month'},
+                                             :day   => {:id => 'dd', :name => 'day'}}
+      
       ##
       # Creates the date picker with the calendar widget.
       #
@@ -24,6 +28,38 @@ module UnobtrusiveDatePicker
       #
       def unobtrusive_datetime_picker(object_name, method, options = {})
          ActionView::Helpers::InstanceTag.new(object_name, method, self, nil, options.delete(:object)).to_datepicker_datetime_select_tag(options)
+      end
+      
+      ##
+      # Creates the date picker with the calendar widget without a model object.
+      #
+      def unobtrusive_date_picker_tags(date = Date.today, options = {})
+         options[:order] ||= []
+         [:year, :month, :day].each { |o| options[:order].push(o) unless options[:order].include?(o) }
+         
+         date_picker = ''
+         options[:order].each do |o|
+            date_picker << self.send("datepicker_select_#{o}", date, options)
+         end
+         date_picker
+      end
+      
+      ##
+      # Creates the date-time picker with the calendar widget, and AM/PM select without a model object
+      #
+      def unobtrusive_datetime_picker_tags(datetime = Time.now, options = {})
+         defaults = { :include_seconds => true }
+         options  = defaults.merge(options)
+         separator = options[:datetime_separator] || ''
+         
+         datetime_picker = unobtrusive_date_picker_tags(datetime, options) + separator
+         
+         datetime_picker << datepicker_select_hour(datetime, options) + ':'
+         datetime_picker << datepicker_select_minute(datetime, options)
+         datetime_picker << (options[:include_seconds] ? ':' + datepicker_select_second(datetime, options) : '') + ' '
+         datetime_picker << datepicker_select_ampm(datetime, options)
+         
+         datetime_picker
       end
       
       def datepicker_select_ampm(datetime, options = {})
@@ -61,7 +97,7 @@ module UnobtrusiveDatePicker
       # i.e. if set to 15: 0, 15, 30, and 45 will be the options supplied in the minute select
       #
       def datepicker_select_minute(datetime, options = {})
-         val = datetime ? (datetime.kind_of?(Fixnum) ? datetime : datetime.min) : ''
+         val = datetime ? (datetime.kind_of?(Fixnum) ? datetime : datetime.strftime("%M").to_i) : ''
          
          minute_options = []
          0.step(59, options[:minute_step] || 1) do |minute|
@@ -72,6 +108,20 @@ module UnobtrusiveDatePicker
          end
          
          select_html(options[:field_name] || 'minute', minute_options, options)
+      end
+      
+      def datepicker_select_second(datetime, options = {})
+         val = datetime ? (datetime.kind_of?(Fixnum) ? datetime : datetime.strftime("%S").to_i) : ''
+         
+         second_options = []
+         0.upto(59) do |second|
+            second_options << ((val == second) ?
+            %(<option value="#{leading_zero_on_single_digits(second)}" selected="selected">#{leading_zero_on_single_digits(second)}</option>\n) :
+            %(<option value="#{leading_zero_on_single_digits(second)}">#{leading_zero_on_single_digits(second)}</option>\n)
+            )
+         end
+         
+         select_html(options[:field_name] || 'second', second_options, options)
       end
 
       def datepicker_select_day(date, options = {})
@@ -85,7 +135,7 @@ module UnobtrusiveDatePicker
             )
          end
          
-         datepicker_select_html('dd', day_options, options)
+         datepicker_select_html(:day, day_options, options)
       end
       
       ##
@@ -115,7 +165,7 @@ module UnobtrusiveDatePicker
             )
          end
          
-         datepicker_select_html('mm', month_options, options)
+         datepicker_select_html(:month, month_options, options)
       end
       
       ##
@@ -137,7 +187,7 @@ module UnobtrusiveDatePicker
          end
          
          options[:class] = options[:class] ? "#{options[:class]} split-date" : 'split-date'
-         datepicker_select_html('', year_options, options)
+         datepicker_select_html(:year, year_options, options)
       end
 
       protected
@@ -157,10 +207,13 @@ module UnobtrusiveDatePicker
 
       def datepicker_name_and_id(type, html_options)
          if html_options[:id_prefix]
-            html_options[:id] = (type == '') ? "#{html_options[:id_prefix]}" : "#{html_options[:id_prefix]}-#{type}"
+            html_options[:id] = (type == :year) ? "#{html_options[:id_prefix]}" : "#{html_options[:id_prefix]}-#{DATEPICKER_DEFAULT_NAME_ID_SUFFIXES[type][:id]}"
          else
-            html_options[:id] = (type == '') ? ActionView::Helpers::DateHelper::DEFAULT_PREFIX : ActionView::Helpers::DateHelper::DEFAULT_PREFIX + "-#{type}"
-            html_options[:name] = ActionView::Helpers::DateHelper::DEFAULT_PREFIX
+            html_options[:id] = ((type == :year) ? 
+               ActionView::Helpers::DateHelper::DEFAULT_PREFIX : 
+               ActionView::Helpers::DateHelper::DEFAULT_PREFIX + "-#{DATEPICKER_DEFAULT_NAME_ID_SUFFIXES[type][:id]}"
+            )
+            html_options[:name] = ActionView::Helpers::DateHelper::DEFAULT_PREFIX + "[#{DATEPICKER_DEFAULT_NAME_ID_SUFFIXES[type][:name]}]"
          end
       end
       
@@ -193,7 +246,7 @@ module UnobtrusiveDatePicker
       private
       
       def datepicker_select(options, time)
-         defaults = { :discard_type => true }
+         defaults = { :include_seconds => true }
          options  = defaults.merge(options)
          datetime = value(object)
          datetime ||= Time.now unless options[:include_blank]
@@ -206,11 +259,13 @@ module UnobtrusiveDatePicker
          
          # Ensure proper ordering of :hour, :minute and :second
          if time
-            [:hour, :minute, :ampm].each { |o| order.delete(o); order.push(o) }
+            [:hour, :minute, :second, :ampm].each { |o| order.delete(o); order.push(o) }
          end
 
          date_or_time_select = ''
          order.reverse.each do |param|
+            next if (param = :second) && !options[:include_seconds]
+            
             date_or_time_select.insert(0, self.send("datepicker_select_#{param}", datetime, datepicker_options_with_prefix(position[param], options)))
             date_or_time_select.insert(0,
             case param
