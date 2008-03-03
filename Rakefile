@@ -1,15 +1,7 @@
 require 'rake'
-require 'rake/testtask'
 require 'rake/rdoctask'
 require 'rubygems'
 require 'spec/rake/spectask'
-
-desc 'Test the unobtrusive_date_picker plugin.'
-Rake::TestTask.new(:test) do |t|
-   t.libs << 'lib'
-   t.pattern = 'test/**/*_test.rb'
-   t.verbose = true
-end
 
 desc 'Generate documentation for the unobtrusive_date_picker plugin.'
 Rake::RDocTask.new(:rdoc) do |rdoc|
