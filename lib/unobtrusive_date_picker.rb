@@ -157,7 +157,7 @@ module UnobtrusiveDatePicker
       def datepicker_select_year(date, options = {})
          val = date ? (date.kind_of?(Fixnum) ? date : date.year) : ''
          
-         y = date ? (date.kind_of?(Fixnum) ? (y = (date == 0) ? Date.today.year : date) : date.year) : Date.today.year
+         y = date ? (date.kind_of?(Fixnum) ? (date == 0 ? Date.today.year : date) : date.year) : Date.today.year
          start_year, end_year = (options[:start_year] || y-5), (options[:end_year] || y+5)
          step_val = start_year < end_year ? 1 : -1
          
