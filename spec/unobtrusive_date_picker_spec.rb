@@ -25,37 +25,85 @@ describe UnobtrusiveDatePicker, "with a stub ActiveRecord object" do
    it_should_behave_like "all date picker form helpers"
    
    before(:each) do
-      @datepicker_html = unobtrusive_date_picker(:date_model, :date)
+      @datepicker_html = unobtrusive_datetime_picker(:datetime_model, :datetime)
    end
    
    it "should select the year from model object attribute" do
-      year_id = 'date_model_date'
-      year_name = 'date_model[date(1i)]'
+      year_id = 'datetime_model_datetime'
+      year_name = 'datetime_model[datetime(1i)]'
       
-      @datepicker_html.should include_tag(:select, :attributes => {:id => year_id, :name => year_name}, 
+      @datepicker_html.should include_tag(:select, :attributes => {:id => year_id, :name => year_name, :class => 'split-date'}, 
                                                    :child => {:tag => 'option', 
-                                                              :attributes => {:value => @date.year.to_s, :selected => 'selected'},
-                                                              :content => @date.year.to_s})
+                                                              :attributes => {:value => @time.year.to_s, :selected => 'selected'},
+                                                              :content => @time.year.to_s})
    end
    
    it "should select the month from model object attribute" do
-      month_id = 'date_model_date-mm'
-      month_name = 'date_model[date(2i)]'
+      month_id = 'datetime_model_datetime-mm'
+      month_name = 'datetime_model[datetime(2i)]'
       
       @datepicker_html.should include_tag(:select, :attributes => {:id => month_id, :name => month_name}, 
                                                    :child => {:tag => 'option', 
-                                                              :attributes => {:value => @date.month.to_s, :selected => 'selected'},
-                                                              :content => Date::MONTHNAMES[@date.month]})
+                                                              :attributes => {:value => @time.month.to_s, :selected => 'selected'},
+                                                              :content => Date::MONTHNAMES[@time.month]})
    end
    
    it "should select the day from model object attribute" do
-      day_id = 'date_model_date-dd'
-      day_name = 'date_model[date(3i)]'
+      day_id = 'datetime_model_datetime-dd'
+      day_name = 'datetime_model[datetime(3i)]'
       
       @datepicker_html.should include_tag(:select, :attributes => {:id => day_id, :name => day_name}, 
                                                    :child => {:tag => 'option', 
-                                                              :attributes => {:value => @date.day.to_s, :selected => 'selected'},
-                                                              :content => @date.day.to_s})
+                                                              :attributes => {:value => @time.day.to_s, :selected => 'selected'},
+                                                              :content => @time.day.to_s})
+   end
+   
+   it "should select the hour from model object attribute" do
+      hour_id = 'datetime_model_datetime_4i_hour'
+      hour_name = 'datetime_model[datetime(4i)][hour]'
+      
+      @datepicker_html.should include_tag(:select, :attributes => {:id => hour_id, :name => hour_name}, 
+                                                   :child => {:tag => 'option', 
+                                                              :attributes => {:value => @time.strftime("%I").to_i.to_s, :selected => 'selected'},
+                                                              :content => @time.strftime("%I").to_i.to_s})
+   end
+   
+   it "should select the minute from model object attribute" do
+      minute_id = 'datetime_model_datetime_5i_minute'
+      minute_name = 'datetime_model[datetime(5i)][minute]'
+      
+      @datepicker_html.should include_tag(:select, :attributes => {:id => minute_id, :name => minute_name}, 
+                                                   :child => {:tag => 'option', 
+                                                              :attributes => {:value => @time.strftime("%M"), :selected => 'selected'},
+                                                              :content => @time.strftime("%M")})
+   end
+   
+   it "should select the meridian from model object attribute" do
+      meridian_id = 'datetime_model_datetime_6i_ampm'
+      meridian_name = 'datetime_model[datetime(6i)][ampm]'
+      
+      @datepicker_html.should include_tag(:select, :attributes => {:id => meridian_id, :name => meridian_name}, 
+                                                   :child => {:tag => 'option', 
+                                                              :attributes => {:value => @time.strftime("%p"), :selected => 'selected'},
+                                                              :content => @time.strftime("%p")})
+   end
+   
+   after(:each) do
+      @datepicker_html = nil
+   end
+   
+end
+
+
+describe UnobtrusiveDatePicker, "with a minute step and month numbers options specified" do
+   it_should_behave_like "all date picker form helpers"
+   
+   before(:each) do
+      @datepicker_html = unobtrusive_date_picker(:date_model, :date, {:use_month_numbers => true, :minute_step => 15})
+   end
+   
+   it "should use month numbers for option text" do
+      pending
    end
    
    after(:each) do
