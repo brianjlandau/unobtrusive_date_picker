@@ -59,7 +59,7 @@ describe UnobtrusiveDatePicker, "with a stub ActiveRecord object" do
    end
    
    after(:each) do
-      @datepicker = nil
+      @datepicker_html = nil
    end
    
 end
