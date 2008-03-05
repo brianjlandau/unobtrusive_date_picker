@@ -23,8 +23,37 @@ end
 describe UnobtrusiveDatePicker, "with a stub ActiveRecord object" do
    it_should_behave_like "all date picker form helpers"
    
-   it "should select current date and time for new models" do
-      pending
+   it "should select the year from model object attribute" do
+      datepicker_html = unobtrusive_date_picker(:date_model, :date)
+      year_id = 'date_model_date'
+      year_name = 'date_model[date(1i)]'
+      
+      datepicker_html.should include_tag(:select, :attributes => {:id => year_id, :name => year_name}, 
+                                                  :child => {:tag => 'option', 
+                                                             :attributes => {:value => '2007', :selected => 'selected'},
+                                                             :content => '2007'})
+   end
+   
+   it "should select the month from model object attribute" do
+      datepicker_html = unobtrusive_date_picker(:date_model, :date)
+      month_id = 'date_model_date-mm'
+      month_name = 'date_model[date(2i)]'
+      
+      datepicker_html.should include_tag(:select, :attributes => {:id => month_id, :name => month_name}, 
+                                                  :child => {:tag => 'option', 
+                                                             :attributes => {:value => '3', :selected => 'selected'},
+                                                             :content => 'March'})
+   end
+   
+   it "should select the day from model object attribute" do
+      datepicker_html = unobtrusive_date_picker(:date_model, :date)
+      day_id = 'date_model_date-dd'
+      day_name = 'date_model[date(3i)]'
+      
+      datepicker_html.should include_tag(:select, :attributes => {:id => day_id, :name => day_name}, 
+                                                  :child => {:tag => 'option', 
+                                                             :attributes => {:value => '15', :selected => 'selected'},
+                                                             :content => '15'})
    end
    
 end
