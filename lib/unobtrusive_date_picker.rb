@@ -16,6 +16,16 @@ module UnobtrusiveDatePicker
                                              :month => {:id => 'mm', :name => 'month'},
                                              :day   => {:id => 'dd', :name => 'day'}}
       
+      DATEPICKER_DAYS_OF_WEEK = {:Monday     => 0,
+                                 :Tuesday    => 1,
+                                 :Wednesday  => 2,
+                                 :Thursday   => 3,
+                                 :Friday     => 4,
+                                 :Saturday   => 5,
+                                 :Sunday     => 6}
+      
+      RANGE_DATE_FORMAT = '%Y-%m-%d'
+      
       ##
       # Creates the date picker with the calendar widget.
       #
@@ -169,7 +179,8 @@ module UnobtrusiveDatePicker
             )
          end
          
-         options[:class] = options[:class] ? "#{options[:class]} split-date" : 'split-date'
+         html_classes = add_date_picker_class_options(options).push('split-date')
+         options[:class] = options[:class] ? "#{options[:class]} #{html_classes.join(' ')}" : html_classes.join(' ')
          datepicker_select_html(:year, year_options, options)
       end
 
@@ -197,6 +208,63 @@ module UnobtrusiveDatePicker
                ActionView::Helpers::DateHelper::DEFAULT_PREFIX + "-#{DATEPICKER_DEFAULT_NAME_ID_SUFFIXES[type][:id]}"
             )
             html_options[:name] = ActionView::Helpers::DateHelper::DEFAULT_PREFIX + "[#{DATEPICKER_DEFAULT_NAME_ID_SUFFIXES[type][:name]}]"
+         end
+      end
+      
+      def add_date_picker_class_options(options = {})
+         html_classes = []
+         
+         if options[:highlight_days]
+            html_classes << 'highlight-days-' + parse_days_of_week(options[:highlight_days])
+         end
+         
+         if options[:range_low]
+             html_classes << parse_range(options[:range_low], 'low')
+         end
+         
+         if options[:range_high]
+             html_classes << parse_range(options[:range_high], 'high')
+         end
+         
+         if options[:disable_days]
+            html_classes << 'disable-days-' + parse_days_of_week(options[:disable_days])
+         end
+         
+         if options[:no_transparency]
+            html_classes < 'no-transparency'
+         end
+      end
+      
+      def parse_days_of_week(option)
+         if option.is_a? String
+            option
+         elsif option.is_a? Symbol
+            DATEPICKER_DAYS_OF_WEEK[option]
+         elsif option.is_a? Array
+            days = ''
+            option.each do |day|
+               days << DATEPICKER_DAYS_OF_WEEK[day]
+            end
+            days
+         end
+      end
+      
+      def parse_range_option(option, direction)
+         range_class = 'range-' + direction + '-'
+         
+         if option.is_a? Symbol
+            case option
+            when :today
+               range_class + 'today'
+            when :tomorrow
+               range_class + Date.tomorrow.strftime(RANGE_DATE_FORMAT)
+            when :yesterday
+               range_class + Date.yesterday.strftime(RANGE_DATE_FORMAT)
+            end
+         elsif option.is_a? String
+            range_class + Date.parse(option).strftime(RANGE_DATE_FORMAT)
+         elsif (option.is_a?(Date) || option.is_a?(DateTime) || option.is_a?(Time))
+            range_class + option.strftime(RANGE_DATE_FORMAT)
          end
       end
       
