@@ -47,18 +47,18 @@ The main options are <tt>start_year</tt>, <tt>end_year</tt>, which control the y
                <option value="2012">2012</option>
             </select>
              &nbsp; 
-            <select id="article_date_4i" name="article[date(4i)]">
+            <select id="article_date_4i" name="article[date(4i)][hour]">
                <option value="1">1</option>
                ...
                <option value="12">12</option>
             </select>
              : 
-            <select id="article_date_5i" name="article[date(5i)]">
+            <select id="article_date_5i" name="article[date(5i)][minute]">
                <option value="00">00</option>
                ...
                <option value="59">59</option>
             </select>
-            <select id="article_date_6i" name="article[date(6i)]">
+            <select id="article_date_6i" name="article[date(6i)][ampm]">
                <option value="AMPM>AMPM</option>
                <option value="AMPM>AMPM</option>
             </select>
