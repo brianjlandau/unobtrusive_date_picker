@@ -8,7 +8,7 @@ Rake::RDocTask.new(:rdoc) do |rdoc|
    rdoc.rdoc_dir = 'rdoc'
    rdoc.title    = 'Unobtrusive Date-Picker'
    rdoc.options << '--line-numbers' << '--inline-source'
-   rdoc.rdoc_files.add ['lib/**/*.rb', 'README', 'MIT-LICENSE']
+   rdoc.rdoc_files.add ['lib/**/*.rb', 'README']
    rdoc.options << '--main' << 'README'
 end
 

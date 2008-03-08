@@ -186,7 +186,7 @@ module UnobtrusiveDatePicker
 
       protected
 
-      def datepicker_select_html(type, date_options, html_options = {})
+      def datepicker_select_html(type, date_options, html_options = {}) # :nodoc:
          datepicker_name_and_id(type, html_options)
          
          select_html  = %(<select id="#{html_options[:id]}" name="#{html_options[:name]}")
@@ -199,7 +199,7 @@ module UnobtrusiveDatePicker
          select_html << "</select>\n"
       end
 
-      def datepicker_name_and_id(type, html_options)
+      def datepicker_name_and_id(type, html_options) # :nodoc:
          if html_options[:id_prefix]
             html_options[:id] = (type == :year) ? "#{html_options[:id_prefix]}" : "#{html_options[:id_prefix]}-#{DATEPICKER_DEFAULT_NAME_ID_SUFFIXES[type][:id]}"
          else
@@ -211,7 +211,7 @@ module UnobtrusiveDatePicker
          end
       end
       
-      def add_date_picker_class_options(options = {})
+      def add_date_picker_class_options(options = {}) # :nodoc:
          html_classes = []
          
          if options[:highlight_days]
@@ -249,7 +249,7 @@ module UnobtrusiveDatePicker
          html_classes
       end
       
-      def parse_days_of_week(option)
+      def parse_days_of_week(option) # :nodoc:
          if option.is_a? String
             option
          elsif option.is_a? Symbol
@@ -263,7 +263,7 @@ module UnobtrusiveDatePicker
          end
       end
       
-      def parse_range_option(option, direction)
+      def parse_range_option(option, direction) # :nodoc:
          if option.is_a? Symbol
             case option
             when :today
