@@ -2,22 +2,52 @@
 = Unobtrusive Date-Picker Widget Plugin
 
 This is a helper for creating a date or date-time picker that uses the 
-{Unobtrusive Date-Picker Widgit}[http://www.frequency-decoder.com/2006/10/02/unobtrusive-date-picker-widgit-update]
-to add a clickable calendar image that will bring up a calendar picker if javascript is available.
+Unobtrusive Date-Picker Widgit(sic) (http://www.frequency-decoder.com/2006/10/02/unobtrusive-date-picker-widgit-update)
+to add a clickable calendar image that will bring up a calendar picker if javascript is available. It replicates as much of the API of the Rails `date_select`, and `datetime_select` form helpers.
 
-The two main form helper methods are <tt>unobtrusive_date_picker</tt> and <tt>unobtrusive_datetime_picker</tt>.
-
-It also uses the {12 Hour Time plugin}[http://code.google.com/p/rails-twelve-hour-time-plugin/] 
+It also uses the  12 Hour Time plugin (http://code.google.com/p/rails-twelve-hour-time-plugin/) 
 so that 12 Hour times can be processed by Active Record.
 
-You may want to consider compressing the javascript files with {Dean Edward's Packer}[http://dean.edwards.name/packer/] 
-or {Douglas Crockford's JSMin}[http://www.crockford.com/javascript/jsmin.html] before deploying your application.
+You may want to consider compressing the javascript files with Dean Edward's Packer (http://dean.edwards.name/packer/) 
+or Douglas Crockford's JSMin (http://www.crockford.com/javascript/jsmin.html) before deploying your application.
 
 
 == Usage
-The main options are <tt>start_year</tt>, <tt>end_year</tt>, which control the year range.
+There are 4 main methods:
+   - unobtrusive_date_picker
+   - unobtrusive_datetime_picker
+   - unobtrusive_date_picker_tags
+   - unobtrusive_datetime_picker_tags
 
-==== Example:
+Options (* indicates same functionality as is in Rails helpers):
+   - *:order => the order the selects should be positioned in
+   - *:include_blank => include a blank option at the top of every select
+   - *:start_year => year that the year select should start on (defaults to 5 below either the year of the date value or current year)
+   - *:end_year => year that the year select should end on (defaults to 5 above either the year of the date value or current year)
+   - *:minute_step => how many minutes apart each minute option should be
+       - example: (:minute_step => 5) would result in [0, 15, 30, 45] as options
+   - *:use_short_month => use short month names (Jan, Feb, etc.) instead of long names (January) for option text
+   - *:use_month_numbers => use month numbers instead of names for option text
+   - *:add_month_numbers => add month numbers to names for option text ("1 - January")
+   - :highlight_days => which days of the week should be highlighted in the datepicker (by default Saturday and Sunday)
+       - Excepts either a string of number representing days of the week (0 = Monday, 1 = Tuesday ... 6 = Sunday)
+       - Or a singular symbol for one day of the week
+       - Or an array of symbols representing days of the week, i.e. [:Monday, :Sunday]
+   - :range_low => the low range of acceptable dates (not times) for this input 
+       - managed by the Javascript, thus should be enforced with your own validations
+       - Excepts:
+         - One of the following symbols: :today, :tomorrow, :yesterday
+         - A string representation of a date
+         - A Date, DateTime, or Time object
+   - :range_high => the high range of acceptable dates (not times) for this input
+       - Excepts same options as :range_low; also managed by javascript
+   - :disable_days => days of the week that may not be selected
+       - Excepts the same format as :highlight_days
+       - Also managed by javascript
+   - :no_transparency => if set to true it disables the fade in/out visual effect of the datepicker
+
+
+=== Example:
    <% form_for :article, :url => { :action => @form_action, :id => @article } do |f| %>
    <fieldset>
       ...
@@ -26,7 +56,7 @@ The main options are <tt>start_year</tt>, <tt>end_year</tt>, which control the y
    </fieldset>
    <% end %>
 
-==== Produces (Current date when output: 12/6/07):
+=== Produces (Current date when output: 12/6/07):
    <form action="/form/create" method="post">
       <fieldset>
          
@@ -69,7 +99,7 @@ The main options are <tt>start_year</tt>, <tt>end_year</tt>, which control the y
 
 
 
-=== LICENSE
+== LICENSE
 
 See MIT-LICENSE file for copyright and licensing information for this plugin.
 
