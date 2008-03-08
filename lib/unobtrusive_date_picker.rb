@@ -16,13 +16,13 @@ module UnobtrusiveDatePicker
                                              :month => {:id => 'mm', :name => 'month'},
                                              :day   => {:id => 'dd', :name => 'day'}}
       
-      DATEPICKER_DAYS_OF_WEEK = {:Monday     => 0,
-                                 :Tuesday    => 1,
-                                 :Wednesday  => 2,
-                                 :Thursday   => 3,
-                                 :Friday     => 4,
-                                 :Saturday   => 5,
-                                 :Sunday     => 6}
+      DATEPICKER_DAYS_OF_WEEK = {:Monday     => '0',
+                                 :Tuesday    => '1',
+                                 :Wednesday  => '2',
+                                 :Thursday   => '3',
+                                 :Friday     => '4',
+                                 :Saturday   => '5',
+                                 :Sunday     => '6'}
       
       RANGE_DATE_FORMAT = '%Y-%m-%d'
       
@@ -215,23 +215,35 @@ module UnobtrusiveDatePicker
          html_classes = []
          
          if options[:highlight_days]
-            html_classes << 'highlight-days-' + parse_days_of_week(options[:highlight_days])
+            highlight_days = parse_days_of_week(options[:highlight_days])
+            if !highlight_days.blank?
+               html_classes << "highlight-days-#{highlight_days}"
+            end
          end
          
          if options[:range_low]
-             html_classes << parse_range(options[:range_low], 'low')
+            range_low = parse_range_option(options[:range_low], 'low')
+            if !range_low.blank?
+               html_classes << range_low
+            end
          end
          
          if options[:range_high]
-             html_classes << parse_range(options[:range_high], 'high')
+            range_high = parse_range_option(options[:range_high], 'high')
+            if !range_high.blank?
+               html_classes << range_high
+            end
          end
          
          if options[:disable_days]
-            html_classes << 'disable-days-' + parse_days_of_week(options[:disable_days])
+            disable_days = parse_days_of_week(options[:disable_days])
+            if !disable_days.blank?
+               html_classes << "disable-days-#{disable_days}"
+            end
          end
          
          if options[:no_transparency]
-            html_classes < 'no-transparency'
+            html_classes << 'no-transparency'
          end
          
          html_classes
@@ -252,21 +264,31 @@ module UnobtrusiveDatePicker
       end
       
       def parse_range_option(option, direction)
-         range_class = 'range-' + direction + '-'
-         
          if option.is_a? Symbol
             case option
             when :today
-               range_class + 'today'
+               range_class = 'today'
             when :tomorrow
-               range_class + Date.tomorrow.strftime(RANGE_DATE_FORMAT)
+               range_class = Date.tomorrow.strftime(RANGE_DATE_FORMAT)
             when :yesterday
-               range_class + Date.yesterday.strftime(RANGE_DATE_FORMAT)
+               range_class = Date.yesterday.strftime(RANGE_DATE_FORMAT)
             end
          elsif option.is_a? String
-            range_class + Date.parse(option).strftime(RANGE_DATE_FORMAT)
+            if !option.blank?
+               range_class = Date.parse(option).strftime(RANGE_DATE_FORMAT)
+            else
+               range_class = nil
+            end
          elsif (option.is_a?(Date) || option.is_a?(DateTime) || option.is_a?(Time))
-            range_class + option.strftime(RANGE_DATE_FORMAT)
+            range_class = option.strftime(RANGE_DATE_FORMAT)
+         else
+            range_class = nil
+         end
+         
+         if !range_class.blank?
+            range_class = 'range-' + direction + '-' + range_class
+         else
+            nil
          end
       end
       
