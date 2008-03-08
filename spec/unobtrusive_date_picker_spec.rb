@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
-describe "all date picker form helpers", :shared => true do
+describe "all datetime picker form helpers", :shared => true do
    include ActionView::Helpers::TagHelper
    include ActionView::Helpers::FormTagHelper
    include ActionView::Helpers::FormHelper
@@ -19,7 +19,7 @@ describe "all date picker form helpers", :shared => true do
 end
 
 describe UnobtrusiveDatePicker, "with a stub ActiveRecord object" do
-   it_should_behave_like "all date picker form helpers"
+   it_should_behave_like "all datetime picker form helpers"
    
    before(:each) do
       @datepicker_html = unobtrusive_datetime_picker(:datetime_model, :datetime)
@@ -93,7 +93,7 @@ end
 
 
 describe UnobtrusiveDatePicker, "with a minute step and month numbers options specified" do
-   it_should_behave_like "all date picker form helpers"
+   it_should_behave_like "all datetime picker form helpers"
    
    before(:each) do
       @step = 15

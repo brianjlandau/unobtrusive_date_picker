@@ -233,6 +233,8 @@ module UnobtrusiveDatePicker
          if options[:no_transparency]
             html_classes < 'no-transparency'
          end
+         
+         html_classes
       end
       
       def parse_days_of_week(option)
