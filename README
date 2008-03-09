@@ -13,6 +13,10 @@ or Douglas Crockford's JSMin (http://www.crockford.com/javascript/jsmin.html) be
 
 
 == Usage
+
+To be able to use the date-picker methods below you need to include the javascript library file and CSS stylesheet in the <head> of your layout template.
+You can do this either by manually including the files via a `javascript_include_tag` and a `stylesheet_link_tag` (the files are both named "datepicker"), OR by using the included `unobtrusive_datepicker_includes` helper method, which will do this for you.
+
 There are 4 main methods:
    - unobtrusive_date_picker
    - unobtrusive_datetime_picker
