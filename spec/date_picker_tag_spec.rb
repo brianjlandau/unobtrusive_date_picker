@@ -78,26 +78,26 @@ describe UnobtrusiveDatePicker, "with specific date and options passed to tag he
    it_should_behave_like "all date picker helpers"
    
    before(:each) do
-      @default_id = ActionView::Helpers::DateHelper::DEFAULT_PREFIX
+      @id = "date_published"
       @date = Date.parse("March 15, 2007")
       @start_year = 1945
       @end_year = Date.today.year
-      @datepicker = unobtrusive_date_picker_tags(@date, {:use_short_month => true, :start_year => @start_year, :end_year => @end_year})
+      @datepicker = unobtrusive_date_picker_tags(@date, {:id => @id, :use_short_month => true, :start_year => @start_year, :end_year => @end_year})
    end
    
    it "should have a year select tag with options that start with the start date and end with the end date" do
      @start_year.upto(@end_year) do |year|
-         @datepicker.should include_tag(:select, :attributes => {:id => @default_id}, :child => {:tag => 'option', :attributes => {:value => year.to_s}, :content => year.to_s})
+         @datepicker.should include_tag(:select, :attributes => {:id => @id}, :child => {:tag => 'option', :attributes => {:value => year.to_s}, :content => year.to_s})
       end
    end
    
    it "should have only the options for the range of years" do
       total_options = (@start_year..@end_year).entries.size
-      @datepicker.should include_tag(:select, :attributes => {:id => @default_id}, :children => {:count => total_options, :only => {:tag => 'option'}})
+      @datepicker.should include_tag(:select, :attributes => {:id => @id}, :children => {:count => total_options, :only => {:tag => 'option'}})
    end
    
    it "should include only options for months 1 to 12" do
-      month_id = @default_id + '-mm'
+      month_id = @id + '-mm'
       
       1.upto(12) do |month|
          @datepicker.should include_tag(:select, :attributes => {:id => month_id}, :child => {:tag => 'option', :attributes => {:value => month.to_s}})
@@ -107,7 +107,7 @@ describe UnobtrusiveDatePicker, "with specific date and options passed to tag he
    end
    
    it "should include only options for days 1 to 31" do
-      day_id = @default_id + '-dd'
+      day_id = @id + '-dd'
       
       1.upto(31) do |day|
          @datepicker.should include_tag(:select, :attributes => {:id => day_id}, :child => {:tag => 'option', :attributes => {:value => day.to_s}, :content => day.to_s})
@@ -117,7 +117,7 @@ describe UnobtrusiveDatePicker, "with specific date and options passed to tag he
    end
    
    it "should use short month names for option text" do
-      month_id = @default_id + '-mm'
+      month_id = @id + '-mm'
       
       1.upto(12) do |month_number|
          @datepicker.should include_tag(:select, :attributes => {:id => month_id}, :child => {:tag => 'option', :attributes => {:value => month_number.to_s}, :content => Date::ABBR_MONTHNAMES[month_number]})
@@ -125,7 +125,7 @@ describe UnobtrusiveDatePicker, "with specific date and options passed to tag he
    end
    
    after(:each) do
-      @date, @datepicker, @start_year, @end_year = nil
+      @id, @date, @datepicker, @start_year, @end_year = nil
    end
    
 end

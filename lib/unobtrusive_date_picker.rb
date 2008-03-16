@@ -44,6 +44,7 @@ module UnobtrusiveDatePicker
       # Creates the date picker with the calendar widget without a model object.
       #
       def unobtrusive_date_picker_tags(date = Date.today, options = {})
+         options[:prefix] = options.delete(:id)
          options[:order] ||= []
          [:year, :month, :day].each { |o| options[:order].push(o) unless options[:order].include?(o) }
          
@@ -58,6 +59,7 @@ module UnobtrusiveDatePicker
       # Creates the date-time picker with the calendar widget, and AM/PM select without a model object
       #
       def unobtrusive_datetime_picker_tags(datetime = Time.now, options = {})
+         options[:prefix] = options.delete(:id)
          separator = options[:datetime_separator] || ''
          
          datetime_picker = unobtrusive_date_picker_tags(datetime, options) + separator
@@ -203,11 +205,12 @@ module UnobtrusiveDatePicker
          if html_options[:id_prefix]
             html_options[:id] = (type == :year) ? "#{html_options[:id_prefix]}" : "#{html_options[:id_prefix]}-#{DATEPICKER_DEFAULT_NAME_ID_SUFFIXES[type][:id]}"
          else
+            html_options[:prefix] ||= ActionView::Helpers::DateHelper::DEFAULT_PREFIX
             html_options[:id] = ((type == :year) ? 
-               ActionView::Helpers::DateHelper::DEFAULT_PREFIX : 
-               ActionView::Helpers::DateHelper::DEFAULT_PREFIX + "-#{DATEPICKER_DEFAULT_NAME_ID_SUFFIXES[type][:id]}"
+               html_options[:prefix] : 
+               html_options[:prefix] + "-#{DATEPICKER_DEFAULT_NAME_ID_SUFFIXES[type][:id]}"
             )
-            html_options[:name] = ActionView::Helpers::DateHelper::DEFAULT_PREFIX + "[#{DATEPICKER_DEFAULT_NAME_ID_SUFFIXES[type][:name]}]"
+            html_options[:name] = html_options[:prefix] + "[#{DATEPICKER_DEFAULT_NAME_ID_SUFFIXES[type][:name]}]"
          end
       end
       
