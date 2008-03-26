@@ -54,6 +54,14 @@ Options (* indicates same functionality as is in Rails helpers):
    - :no_transparency => if set to true it disables the fade in/out visual effect of the datepicker
 
 
+==== Rake task
+
+There is also a rake task that can be executed by running `rake datepicker:update` in your Rails apps root directory.
+This task will update your datepicker javascripts, stylesheets, and images.
+This is useful if you are using an old version of the plugin that had an older version of the Unobtrusive Date-Picker Widget Javascript library, or in the future when new version are release and I update the plugin with them.
+
+
+
 === Example:
    <% form_for :article, :url => { :action => @form_action, :id => @article } do |f| %>
    <fieldset>
