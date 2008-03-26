@@ -324,6 +324,9 @@ module UnobtrusiveDatePicker
       private
       
       def datepicker_select(options, time)
+         defaults = { :discard_type => true }
+         options  = defaults.merge(options)
+         
          datetime = value(object)
          datetime ||= Time.now unless options[:include_blank]
 
