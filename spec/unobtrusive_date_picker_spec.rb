@@ -56,8 +56,8 @@ describe UnobtrusiveDatePicker, "with a stub ActiveRecord object" do
    end
    
    it "should select the hour from model object attribute" do
-      hour_id = 'datetime_model_datetime_4i_hour'
-      hour_name = 'datetime_model[datetime(4i)][hour]'
+      hour_id = 'datetime_model_datetime_4i'
+      hour_name = 'datetime_model[datetime(4i)]'
       
       @datepicker_html.should include_tag(:select, :attributes => {:id => hour_id, :name => hour_name}, 
                                                    :child => {:tag => 'option', 
@@ -66,8 +66,8 @@ describe UnobtrusiveDatePicker, "with a stub ActiveRecord object" do
    end
    
    it "should select the minute from model object attribute" do
-      minute_id = 'datetime_model_datetime_5i_minute'
-      minute_name = 'datetime_model[datetime(5i)][minute]'
+      minute_id = 'datetime_model_datetime_5i'
+      minute_name = 'datetime_model[datetime(5i)]'
       
       @datepicker_html.should include_tag(:select, :attributes => {:id => minute_id, :name => minute_name}, 
                                                    :child => {:tag => 'option', 
@@ -76,8 +76,8 @@ describe UnobtrusiveDatePicker, "with a stub ActiveRecord object" do
    end
    
    it "should select the meridian from model object attribute" do
-      meridian_id = 'datetime_model_datetime_6i_ampm'
-      meridian_name = 'datetime_model[datetime(6i)][ampm]'
+      meridian_id = 'datetime_model_datetime_6s'
+      meridian_name = 'datetime_model[datetime(6s)]'
       
       @datepicker_html.should include_tag(:select, :attributes => {:id => meridian_id, :name => meridian_name}, 
                                                    :child => {:tag => 'option', 
@@ -113,8 +113,8 @@ describe UnobtrusiveDatePicker, "with a minute step and month numbers options sp
    end
    
    it "should select the minute from model object attribute" do
-      minute_id = 'datetime_model_datetime_5i_minute'
-      minute_name = 'datetime_model[datetime(5i)][minute]'
+      minute_id = 'datetime_model_datetime_5i'
+      minute_name = 'datetime_model[datetime(5i)]'
       
       
       @datepicker_html.should include_tag(:select, :attributes => {:id => minute_id, :name => minute_name}, 
