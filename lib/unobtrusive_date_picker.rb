@@ -343,7 +343,11 @@ module UnobtrusiveDatePicker
 
          date_or_time_select = ''
          order.reverse.each do |param|
-            date_or_time_select.insert(0, self.send("datepicker_select_#{param}", datetime, datepicker_options_with_prefix(position[param], options)))
+            if param == :ampm
+               date_or_time_select.insert(0, self.send("datepicker_select_#{param}", datetime, datepicker_options_with_prefix(position[param], options.merge(:string => true))))
+            else
+               date_or_time_select.insert(0, self.send("datepicker_select_#{param}", datetime, datepicker_options_with_prefix(position[param], options)))
+            end
             date_or_time_select.insert(0,
             case param
                when :hour then " &nbsp; "
@@ -362,9 +366,14 @@ module UnobtrusiveDatePicker
          elsif @auto_index
             prefix << "[#{@auto_index}]"
          end
-         options[:name] = "#{prefix}[#{@method_name}(#{position}i)]"
          options[:id_prefix] = "#{@object_name}_#{@method_name}"
-         options.merge(:prefix => "#{prefix}[#{@method_name}(#{position}i)]")
+         if options[:string]
+            options[:name] = "#{prefix}[#{@method_name}(#{position}s)]"
+            options.merge(:prefix => "#{prefix}[#{@method_name}(#{position}s)]")
+         else
+            options[:name] = "#{prefix}[#{@method_name}(#{position}i)]"
+            options.merge(:prefix => "#{prefix}[#{@method_name}(#{position}i)]")
+         end
       end
       
    end

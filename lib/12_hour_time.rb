@@ -40,11 +40,7 @@ module ActionView::Helpers::DateHelper # :nodoc: all
    def select_hour_with_ampm(datetime, options = {})
       options[:twelve_hour] or return select_hour_without_ampm(datetime, options)
 
-      val = ''
-      if datetime
-         val = datetime.kind_of?(Fixnum) ? datetime : datetime.hour
-         val -= 12 if val > 12
-      end
+      val = _12_hour(datetime)
 
       if options[:use_hidden]
          return hidden_html(options[:field_name] || 'hour', val, options)
@@ -64,7 +60,7 @@ module ActionView::Helpers::DateHelper # :nodoc: all
 
    def select_ampm(datetime, options = {})
       ampm = [AM, PM]
-      val = datetime ? (choices.include?(datetime) ? datetime : datetime.strftime("%p")) : ''
+      val = datetime ? (ampm.include?(datetime) ? datetime : datetime.strftime("%p")) : ''
 
       if options[:use_hidden]
          return hidden_html(options[:field_name] || 'ampm', val, options)
@@ -86,6 +82,18 @@ module ActionView::Helpers::DateHelper # :nodoc: all
    end
 
    alias_method_chain :select_time, :ampm
+
+   private
+
+   def _12_hour(datetime)
+      return '' if datetime.blank?
+
+      hour = datetime.kind_of?(Fixnum) ? datetime : datetime.hour
+      hour = 12 if hour == 0
+      hour -= 12 if hour > 12
+
+      return hour
+   end
 end
 
 class ActionView::Helpers::InstanceTag # :nodoc: all
@@ -100,8 +108,22 @@ class ActionView::Helpers::InstanceTag # :nodoc: all
       datetime ||= Time.now unless options[:include_blank]
 
       date_or_time_select_without_ampm(options) +
-      select_ampm(datetime, options_with_prefix(6, options.merge(:use_hidden => options[:discard_hour])))
+      select_ampm(datetime, options_with_prefix(6, options.merge(:use_hidden => options[:discard_hour], :string => true)))
    end
 
    alias_method_chain :date_or_time_select, :ampm
+
+   def options_with_prefix_with_ampm(position, options)
+      prefix = "#{@object_name}"
+      if options[:index]
+         prefix << "[#{options[:index]}]"
+      elsif @auto_index
+         prefix << "[#{@auto_index}]"
+      end
+      if options[:string]
+         options.merge(:prefix => "#{prefix}[#{@method_name}(#{position}s)]")
+      else
+         options.merge(:prefix => "#{prefix}[#{@method_name}(#{position}i)]")
+      end
+   end
 end
