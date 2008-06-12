@@ -381,6 +381,20 @@ module UnobtrusiveDatePicker
 end
 # /UnobtrusiveDatePicker
 
+module ActionView::Helpers::PrototypeHelper # :nodoc: all
+   class JavaScriptGenerator
+      module GeneratorMethods
+         def unobtrusive_date_picker_create(id = nil)
+            if id
+               call "datePickerController.create", "$(#{id})"
+            else
+               record "datePickerController.create"
+            end
+         end
+      end
+   end
+end
+
 
 module ActionView # :nodoc: all
    module Helpers
