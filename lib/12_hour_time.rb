@@ -97,9 +97,9 @@ module ActionView::Helpers::DateHelper # :nodoc: all
 end
 
 class ActionView::Helpers::InstanceTag # :nodoc: all
-   def date_or_time_select_with_ampm(options)
+   def date_or_time_select_with_ampm(options, html_options)
       options[:twelve_hour] and not options[:discard_hour] or
-      return date_or_time_select_without_ampm(options)
+      return date_or_time_select_without_ampm(options, html_options)
 
       defaults = { :discard_type => true }
       options = defaults.merge(options)
@@ -107,7 +107,7 @@ class ActionView::Helpers::InstanceTag # :nodoc: all
       datetime = value(object)
       datetime ||= Time.now unless options[:include_blank]
 
-      date_or_time_select_without_ampm(options) +
+      date_or_time_select_without_ampm(options, html_options) +
       select_ampm(datetime, options_with_prefix(6, options.merge(:use_hidden => options[:discard_hour], :string => true)))
    end
 
