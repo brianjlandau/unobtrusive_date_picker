@@ -37,7 +37,7 @@ module ActionView::Helpers::DateHelper # :nodoc: all
    AM = 'AM'
    PM = 'PM'
 
-   def select_hour_with_ampm(datetime, options = {})
+   def select_hour_with_ampm(datetime, options = {}, html_options = {})
       options[:twelve_hour] or return select_hour_without_ampm(datetime, options)
 
       val = _12_hour(datetime)
@@ -52,13 +52,13 @@ module ActionView::Helpers::DateHelper # :nodoc: all
          hour_options << %(<option value="#{leading_zero_on_single_digits(hour)}"#{selected}>#{leading_zero_on_single_digits(hour)}</option>\n)
       end
 
-      select_html(options[:field_name] || 'hour', hour_options, options)
+      select_html(options[:field_name] || 'hour', hour_options, options, html_options)
    end
 
    alias_method_chain :select_hour, :ampm
 
 
-   def select_ampm(datetime, options = {})
+   def select_ampm(datetime, options = {}, html_options = {})
       ampm = [AM, PM]
       val = datetime ? (ampm.include?(datetime) ? datetime : datetime.strftime("%p")) : ''
 
@@ -72,12 +72,12 @@ module ActionView::Helpers::DateHelper # :nodoc: all
          ampm_options << %(<option value="#{meridiem}"#{selected}>#{meridiem}</option>\n)
       end
 
-      select_html(options[:field_name] || 'ampm', ampm_options, options)
+      select_html(options[:field_name] || 'ampm', ampm_options, options, html_options)
    end
 
-   def select_time_with_ampm(datetime = Time.now, options = {})
-      select = select_time_without_ampm(datetime, options)
-      select << select_ampm(datetime, options) if options[:twelve_hour]
+   def select_time_with_ampm(datetime = Time.now, options = {}, html_options = {})
+      select = select_time_without_ampm(datetime, options, html_options)
+      select << select_ampm(datetime, options, html_options) if options[:twelve_hour]
       select
    end
 
