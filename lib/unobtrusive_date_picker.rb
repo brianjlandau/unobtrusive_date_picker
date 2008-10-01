@@ -453,6 +453,10 @@ module ActionView::Helpers::PrototypeHelper # :nodoc: all
           record "datePickerController.create"
         end
       end
+      
+      def unobtrusive_date_picker_cleanup(id = nil)
+        record "datePickerController.cleanUp"
+      end
     end
   end
 end
