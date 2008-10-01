@@ -14,7 +14,6 @@ ActionView::Base.send :include, UnobtrusiveDatePicker::UnobtrusiveDatePickerHelp
 ActionView::Helpers::DateHelper.send :include, UnobtrusiveDatePicker::UnobtrusiveDatePickerHelper
 ActionView::Base.send :include, UnobtrusiveDatePicker::AssetTagHelper
 ActionView::Helpers::AssetTagHelper.send :include, UnobtrusiveDatePicker::AssetTagHelper
-ActionView::Helpers::InstanceTag.send :include, UnobtrusiveDatePicker::InstanceTag
 
 ActionController::Base.perform_caching = false
 ActionController::Base.consider_all_requests_local = true

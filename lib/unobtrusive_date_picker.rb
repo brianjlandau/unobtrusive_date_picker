@@ -361,83 +361,86 @@ module UnobtrusiveDatePicker
     end
   end
 
-  module InstanceTag # :nodoc: all
-    include UnobtrusiveDatePicker::UnobtrusiveDatePickerHelper
-
-    def to_datepicker_datetime_select_tag(options = {}, html_options = {})
-      datepicker_select(options, true, html_options)
-    end
-
-    def to_datepicker_date_select_tag(options = {}, html_options = {})
-      datepicker_select(options, false, html_options)
-    end
-    
-    def to_datepicker_text_tag(options = {}, html_options = {})
-      options, html_options = datepicker_text_field_options(options, html_options)
-      html_options[:value] = format_date_value_for_text_field(options[:format], options[:divider], value(object))
-      to_input_field_tag('text', html_options)
-    end
-
-    private
-
-    def datepicker_select(options, time, html_options = {})
-      defaults = { :discard_type => true }
-      options  = defaults.merge(options)
-
-      datetime = value(object)
-      datetime ||= Time.now unless options[:include_blank]
-
-      position = { :year => 1, :month => 2, :day => 3, :hour => 4, :minute => 5, :ampm => 6 }
-      order    = (options[:order] ||= [:day, :month, :year])
-
-      # Maintain valid dates by including hidden fields for discarded elements
-      [:day, :month, :year].each { |o| order.unshift(o) unless order.include?(o) }
-
-      # Ensure proper ordering of :hour, :minute and :second
-      if time
-        [:hour, :minute, :ampm].each { |o| order.delete(o); order.push(o) }
-      end
-
-      date_or_time_select = ''
-      order.reverse.each do |param|
-        if param == :ampm
-          date_or_time_select.insert(0, self.send("datepicker_select_#{param}", datetime, datepicker_options_with_prefix(position[param], options.merge(:string => true)), html_options))
-        else
-          date_or_time_select.insert(0, self.send("datepicker_select_#{param}", datetime, datepicker_options_with_prefix(position[param], options), html_options))
-        end
-        date_or_time_select.insert(0,
-          case param
-          when :hour then " &nbsp; "
-          when :minute then " : "
-          else ""
-          end
-        )
-      end
-
-      date_or_time_select
-    end
-
-    def datepicker_options_with_prefix(position, options)
-      prefix = "#{@object_name}"
-      if options[:index]
-        prefix << "[#{options[:index]}]"
-      elsif @auto_index
-        prefix << "[#{@auto_index}]"
-      end
-      options[:id_prefix] = "#{@object_name}_#{@method_name}"
-      if options[:string]
-        options[:name] = "#{prefix}[#{@method_name}(#{position}s)]"
-        options.merge(:prefix => "#{prefix}[#{@method_name}(#{position}s)]")
-      else
-        options[:name] = "#{prefix}[#{@method_name}(#{position}i)]"
-        options.merge(:prefix => "#{prefix}[#{@method_name}(#{position}i)]")
-      end
-    end
-
-  end
-
 end
 # /UnobtrusiveDatePicker
+
+module ActionView # :nodoc: all
+  module Helpers
+    class InstanceTag
+      include UnobtrusiveDatePicker::UnobtrusiveDatePickerHelper
+
+      def to_datepicker_datetime_select_tag(options = {}, html_options = {})
+        datepicker_select(options, true, html_options)
+      end
+
+      def to_datepicker_date_select_tag(options = {}, html_options = {})
+        datepicker_select(options, false, html_options)
+      end
+    
+      def to_datepicker_text_tag(options = {}, html_options = {})
+        options, html_options = datepicker_text_field_options(options, html_options)
+        html_options[:value] = format_date_value_for_text_field(options[:format], options[:divider], value(object))
+        to_input_field_tag('text', html_options)
+      end
+
+      private
+
+      def datepicker_select(options, time, html_options = {})
+        defaults = { :discard_type => true }
+        options  = defaults.merge(options)
+
+        datetime = value(object)
+        datetime ||= Time.now unless options[:include_blank]
+
+        position = { :year => 1, :month => 2, :day => 3, :hour => 4, :minute => 5, :ampm => 6 }
+        order    = (options[:order] ||= [:day, :month, :year])
+
+        # Maintain valid dates by including hidden fields for discarded elements
+        [:day, :month, :year].each { |o| order.unshift(o) unless order.include?(o) }
+
+        # Ensure proper ordering of :hour, :minute and :second
+        if time
+          [:hour, :minute, :ampm].each { |o| order.delete(o); order.push(o) }
+        end
+
+        date_or_time_select = ''
+        order.reverse.each do |param|
+          if param == :ampm
+            date_or_time_select.insert(0, self.send("datepicker_select_#{param}", datetime, datepicker_options_with_prefix(position[param], options.merge(:string => true)), html_options))
+          else
+            date_or_time_select.insert(0, self.send("datepicker_select_#{param}", datetime, datepicker_options_with_prefix(position[param], options), html_options))
+          end
+          date_or_time_select.insert(0,
+            case param
+            when :hour then " &nbsp; "
+            when :minute then " : "
+            else ""
+            end
+          )
+        end
+
+        date_or_time_select
+      end
+
+      def datepicker_options_with_prefix(position, options)
+        prefix = "#{@object_name}"
+        if options[:index]
+          prefix << "[#{options[:index]}]"
+        elsif @auto_index
+          prefix << "[#{@auto_index}]"
+        end
+        options[:id_prefix] = "#{@object_name}_#{@method_name}"
+        if options[:string]
+          options[:name] = "#{prefix}[#{@method_name}(#{position}s)]"
+          options.merge(:prefix => "#{prefix}[#{@method_name}(#{position}s)]")
+        else
+          options[:name] = "#{prefix}[#{@method_name}(#{position}i)]"
+          options.merge(:prefix => "#{prefix}[#{@method_name}(#{position}i)]")
+        end
+      end
+    end
+  end
+end
 
 module ActionView::Helpers::PrototypeHelper # :nodoc: all
   class JavaScriptGenerator
@@ -471,4 +474,3 @@ module ActionView # :nodoc: all
     end
   end
 end
-
