@@ -1,13 +1,6 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
 describe "all date picker form helpers", :shared => true do
-   include ActionView::Helpers::TagHelper
-   include ActionView::Helpers::FormTagHelper
-   include ActionView::Helpers::FormHelper
-   include ActionView::Helpers::DateHelper
-   include ActionView::Helpers::ActiveRecordHelper
-   include UnobtrusiveDatePicker::UnobtrusiveDatePickerHelper
-   
    before(:each) do
       @date = Date.parse("March 15, 2007")
       @date_model = stub('DateModel', :date => @date, :id => 1)
@@ -20,6 +13,7 @@ end
 
 
 describe UnobtrusiveDatePicker, "with :highlight_days option passed a string" do
+   it_should_behave_like "all date picker helpers"
    it_should_behave_like "all date picker form helpers"
    
    before(:each) do
@@ -42,6 +36,7 @@ end
 
 
 describe UnobtrusiveDatePicker, "with :highlight_days option passed an array of symbols" do
+   it_should_behave_like "all date picker helpers"
    it_should_behave_like "all date picker form helpers"
    
    before(:each) do
@@ -64,6 +59,7 @@ end
 
 
 describe UnobtrusiveDatePicker, "with :highlight_days option passed an empty array" do
+   it_should_behave_like "all date picker helpers"
    it_should_behave_like "all date picker form helpers"
    
    before(:each) do
@@ -84,6 +80,7 @@ end
 
 
 describe UnobtrusiveDatePicker, "with :range_low option passed :today" do
+   it_should_behave_like "all date picker helpers"
    it_should_behave_like "all date picker form helpers"
    
    before(:each) do
@@ -105,6 +102,7 @@ end
 
 
 describe UnobtrusiveDatePicker, "with :range_low option passed :tomorrow" do
+   it_should_behave_like "all date picker helpers"
    it_should_behave_like "all date picker form helpers"
    
    before(:each) do
@@ -127,6 +125,7 @@ end
 
 
 describe UnobtrusiveDatePicker, "with :range_high option passed a string" do
+   it_should_behave_like "all date picker helpers"
    it_should_behave_like "all date picker form helpers"
    
    before(:each) do
@@ -150,6 +149,7 @@ end
 
 
 describe UnobtrusiveDatePicker, "with :range_high option passed a Date object" do
+   it_should_behave_like "all date picker helpers"
    it_should_behave_like "all date picker form helpers"
    
    before(:each) do
@@ -173,6 +173,7 @@ end
 
 
 describe UnobtrusiveDatePicker, "with :range_high passed nil and :range_low option passed an empty string" do
+   it_should_behave_like "all date picker helpers"
    it_should_behave_like "all date picker form helpers"
    
    before(:each) do
@@ -193,6 +194,7 @@ end
 
 
 describe UnobtrusiveDatePicker, "with :disable_days option passed an array of symbols" do
+   it_should_behave_like "all date picker helpers"
    it_should_behave_like "all date picker form helpers"
    
    before(:each) do
@@ -215,6 +217,7 @@ end
 
 
 describe UnobtrusiveDatePicker, "with :disable_days option passed an empty array" do
+   it_should_behave_like "all date picker helpers"
    it_should_behave_like "all date picker form helpers"
    
    before(:each) do
@@ -235,6 +238,7 @@ end
 
 
 describe UnobtrusiveDatePicker, "with :no_transparency option set to true" do
+   it_should_behave_like "all date picker helpers"
    it_should_behave_like "all date picker form helpers"
    
    before(:each) do
@@ -256,6 +260,7 @@ end
 
 
 describe UnobtrusiveDatePicker, "with :no_transparency option set to false" do
+   it_should_behave_like "all date picker helpers"
    it_should_behave_like "all date picker form helpers"
    
    before(:each) do

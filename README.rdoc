@@ -34,8 +34,10 @@ There are 4 main methods:
    - unobtrusive_datetime_picker
    - unobtrusive_date_picker_tags
    - unobtrusive_datetime_picker_tags
+   - unobtrusive_date_text_picker
+   - unobtrusive_date_text_picker_tag
 
-Options (* indicates same functionality as is in Rails helpers):
+Options (* indicates same functionality as is in Rails Date helpers):
    - *:order => the order the selects should be positioned in
    - *:include_blank => include a blank option at the top of every select
    - *:start_year => year that the year select should start on (defaults to 5 
@@ -65,6 +67,20 @@ Options (* indicates same functionality as is in Rails helpers):
        - Also managed by javascript
    - :no_transparency => if set to true it disables the fade in/out
                          visual effect of the datepicker
+
+The `unobtrusive_date_text_picker` and `unobtrusive_date_text_picker_tag` methods
+don't except the ":order", ":include_blank", ":start_year", ":end_year", ":minute_step", ":use_short_month",
+":use_month_numbers", and ":add_month_numbers" options.
+It does use these options though:
+   - :format => the format the date should be in
+      - m-d-y
+      - d-m-y
+      - y-m-d
+   - :divider => the divider used between the dates
+      - "slash" or "/"
+      - "dash"  or "-"
+      - "dot"   or "."
+      - "space" or " " 
 
 
 ==== RJS Method

@@ -20,10 +20,21 @@ ActionController::Base.perform_caching = false
 ActionController::Base.consider_all_requests_local = true
 ActionController::Base.allow_forgery_protection    = false
 
+describe "all date picker helpers", :shared => true do
+  include ActionView::Helpers::TagHelper
+  include ActionView::Helpers::TextHelper
+  include ActionView::Helpers::UrlHelper
+  include ActionView::Helpers::FormTagHelper
+  include ActionView::Helpers::FormHelper
+  include ActionView::Helpers::DateHelper
+  include ActionView::Helpers::ActiveRecordHelper
+  include UnobtrusiveDatePicker::UnobtrusiveDatePickerHelper
+end
 
 Spec::Runner.configure do |config|
    
    config.include(TagMatcher)
+   config.include(SelectorMatcher)
    
    # == Mock Framework
    #
