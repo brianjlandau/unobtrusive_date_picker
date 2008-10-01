@@ -188,6 +188,7 @@ module UnobtrusiveDatePicker
     # This method will accept a "<tt>start_year</tt>" and "<tt>end_year</tt>" options.
     #
     def datepicker_select_year(date, options = {}, html_options = {})
+      year_html_options = html_options.dup
       val = date ? (date.kind_of?(Fixnum) ? date : date.year) : ''
 
       y = date ? (date.kind_of?(Fixnum) ? (date == 0 ? Date.today.year : date) : date.year) : Date.today.year
@@ -203,8 +204,8 @@ module UnobtrusiveDatePicker
       end
 
       html_classes = make_date_picker_class_options(options).push('split-date')
-      html_options[:class] = html_options[:class] ? "#{html_options[:class]} #{html_classes.join(' ')}" : html_classes.join(' ')
-      datepicker_select_html(:year, year_options, options, html_options)
+      year_html_options[:class] = year_html_options[:class] ? "#{year_html_options[:class]} #{html_classes.join(' ')}" : html_classes.join(' ')
+      datepicker_select_html(:year, year_options, options, year_html_options)
     end
 
     protected
