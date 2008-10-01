@@ -1,14 +1,5 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
-describe "all date picker helpers", :shared => true do
-   include ActionView::Helpers::TagHelper
-   include ActionView::Helpers::FormTagHelper
-   include ActionView::Helpers::FormHelper
-   include ActionView::Helpers::DateHelper
-   include ActionView::Helpers::ActiveRecordHelper
-   include UnobtrusiveDatePicker::UnobtrusiveDatePickerHelper
-end
-
 describe UnobtrusiveDatePicker, "with no data passed to tag helper" do
    it_should_behave_like "all date picker helpers"
    
@@ -82,7 +73,7 @@ describe UnobtrusiveDatePicker, "with specific date and options passed to tag he
       @date = Date.parse("March 15, 2007")
       @start_year = 1945
       @end_year = Date.today.year
-      @datepicker = unobtrusive_date_picker_tags(@date, {:id => @id, :use_short_month => true, :start_year => @start_year, :end_year => @end_year})
+      @datepicker = unobtrusive_date_picker_tags(@date, {:use_short_month => true, :start_year => @start_year, :end_year => @end_year}, {:id => @id})
    end
    
    it "should have a year select tag with options that start with the start date and end with the end date" do

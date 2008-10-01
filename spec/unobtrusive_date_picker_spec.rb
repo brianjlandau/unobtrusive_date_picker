@@ -1,13 +1,6 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
 describe "all datetime picker form helpers", :shared => true do
-   include ActionView::Helpers::TagHelper
-   include ActionView::Helpers::FormTagHelper
-   include ActionView::Helpers::FormHelper
-   include ActionView::Helpers::DateHelper
-   include ActionView::Helpers::ActiveRecordHelper
-   include UnobtrusiveDatePicker::UnobtrusiveDatePickerHelper
-   
    before(:each) do
       @time = Time.parse("March 15, 2007 2:37PM")
       @datetime_model = stub('DateTimeModel', :datetime => @time, :id => 2)
@@ -19,6 +12,7 @@ describe "all datetime picker form helpers", :shared => true do
 end
 
 describe UnobtrusiveDatePicker, "with a stub ActiveRecord object" do
+   it_should_behave_like "all date picker helpers"
    it_should_behave_like "all datetime picker form helpers"
    
    before(:each) do
@@ -93,6 +87,7 @@ end
 
 
 describe UnobtrusiveDatePicker, "with a minute step and month numbers options specified" do
+   it_should_behave_like "all date picker helpers"
    it_should_behave_like "all datetime picker form helpers"
    
    before(:each) do
