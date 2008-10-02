@@ -13,6 +13,7 @@
 # 
 
 # :enddoc:
+if defined? ActiveRecord
 class ActiveRecord::Base # :nodoc: all
   def extract_callstack_for_multiparameter_attributes_with_ampm(pairs)
     attributes = extract_callstack_for_multiparameter_attributes_without_ampm(pairs)
@@ -30,6 +31,7 @@ class ActiveRecord::Base # :nodoc: all
   end
 
   alias_method_chain :extract_callstack_for_multiparameter_attributes, :ampm
+end
 end
 
 module ActionView::Helpers::DateHelper # :nodoc: all
