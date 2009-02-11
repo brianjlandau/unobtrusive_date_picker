@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>File: README.rdoc</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+  <div id="fileHeader">
+    <h1>README.rdoc</h1>
+    <table class="header-table">
+    <tr class="top-aligned-row">
+      <td><strong>Path:</strong></td>
+      <td>README.rdoc
+      </td>
+    </tr>
+    <tr class="top-aligned-row">
+      <td><strong>Last Update:</strong></td>
+      <td>Wed Feb 11 12:53:09 -0500 2009</td>
+    </tr>
+    </table>
+  </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <h1>Unobtrusive Date-Picker Widget Plugin</h1>
+<p>
+This is a helper for creating a date or date-time picker that uses the
+Unobtrusive Date-Picker Widget(sic) (<a
+href="http://www.frequency-decoder.com/2006/10/02/unobtrusive-date-picker-widgit-update">www.frequency-decoder.com/2006/10/02/unobtrusive-date-picker-widgit-update</a>)
+to add a clickable calendar image that will bring up a calendar picker if
+javascript is available. It replicates as much of the API of the Rails
+`date_select`, and `datetime_select` form helpers.
+</p>
+<p>
+It also uses the 12 Hour Time plugin (<a
+href="http://code.google.com/p/rails-twelve-hour-time-plugin">code.google.com/p/rails-twelve-hour-time-plugin</a>/)
+so that 12 Hour times can be processed by Active Record.
+</p>
+<p>
+You may want to consider compressing the javascript files with Dean
+Edward&#8216;s Packer (<a
+href="http://dean.edwards.name/packer">dean.edwards.name/packer</a>/) or
+Douglas Crockford&#8216;s JSMin (<a
+href="http://www.crockford.com/javascript/jsmin.html">www.crockford.com/javascript/jsmin.html</a>)
+before deploying your application.
+</p>
+<h2>Install</h2>
+<pre>
+   `script/plugin install git@github.com:brianjlandau/unobtrusive_date_picker.git`
+</pre>
+<h2>Usage</h2>
+<p>
+To be able to use the date-picker methods below you need to include the
+javascript library file and CSS stylesheet in the &lt;head&gt; of your
+layout template. You can do this either by manually including the files via
+a `javascript_include_tag` and a `stylesheet_link_tag` (the files are both
+named &quot;datepicker&quot;), OR by using the included
+`unobtrusive_datepicker_includes` helper method, which will do this for
+you.
+</p>
+<p>
+There are 4 main methods:
+</p>
+<pre>
+   - unobtrusive_date_picker
+   - unobtrusive_datetime_picker
+   - unobtrusive_date_picker_tags
+   - unobtrusive_datetime_picker_tags
+   - unobtrusive_date_text_picker
+   - unobtrusive_date_text_picker_tag
+</pre>
+<p>
+Options (* indicates same functionality as is in Rails Date helpers):
+</p>
+<pre>
+   - *:order =&gt; the order the selects should be positioned in
+   - *:include_blank =&gt; include a blank option at the top of every select
+   - *:start_year =&gt; year that the year select should start on (defaults to 5
+                     below either the year of the date value or current year)
+   - *:end_year =&gt; year that the year select should end on (defaults to 5 above
+                   either the year of the date value or current year)
+   - *:minute_step =&gt; how many minutes apart each minute option should be
+       - example: (:minute_step =&gt; 5) would result in [0, 15, 30, 45] as options
+   - *:use_short_month =&gt; use short month names (Jan, Feb, etc.) instead of long
+                          names (January) for option text
+   - *:use_month_numbers =&gt; use month numbers instead of names for option text
+   - *:add_month_numbers =&gt; add month numbers to names for option text (&quot;1 - January&quot;)
+   - :highlight_days =&gt; which days of the week should be highlighted in the datepicker (by default Saturday and Sunday)
+       - Excepts either a string of number representing days of the week (0 = Monday, 1 = Tuesday ... 6 = Sunday)
+       - Or a singular symbol for one day of the week
+       - Or an array of symbols representing days of the week, i.e. [:Monday, :Sunday]
+   - :range_low =&gt; the low range of acceptable dates (not times) for this input
+       - managed by the Javascript, thus should be enforced with your own validations
+       - Excepts:
+         - One of the following symbols: :today, :tomorrow, :yesterday
+         - A string representation of a date
+         - A Date, DateTime, or Time object
+   - :range_high =&gt; the high range of acceptable dates (not times) for this input
+       - Excepts same options as :range_low; also managed by javascript
+   - :disable_days =&gt; days of the week that may not be selected
+       - Excepts the same format as :highlight_days
+       - Also managed by javascript
+   - :no_transparency =&gt; if set to true it disables the fade in/out
+                         visual effect of the datepicker
+</pre>
+<p>
+The `unobtrusive_date_text_picker` and `unobtrusive_date_text_picker_tag`
+methods don&#8216;t except the &quot;:order&quot;,
+&quot;:include_blank&quot;, &quot;:start_year&quot;, &quot;:end_year&quot;,
+&quot;:minute_step&quot;, &quot;:use_short_month&quot;,
+&quot;:use_month_numbers&quot;, and &quot;:add_month_numbers&quot; options.
+It does use these options though:
+</p>
+<pre>
+   - :format =&gt; the format the date should be in
+      - m-d-y
+      - d-m-y
+      - y-m-d
+   - :divider =&gt; the divider used between the dates
+      - &quot;slash&quot; or &quot;/&quot;
+      - &quot;dash&quot;  or &quot;-&quot;
+      - &quot;dot&quot;   or &quot;.&quot;
+      - &quot;space&quot; or &quot; &quot;
+</pre>
+<h4>RJS Method</h4>
+<p>
+There is an additional RJS method to re initialize the Date Pickers when an
+AJAX response is supplied to the client:
+</p>
+<pre>
+   - unobtrusive_date_picker_create
+      - This method can accept the DOM ID of a year select element to turn into
+        a date picker widget or if none is provided it will create all based on
+        the appropriate class name.
+</pre>
+<h4>Rake task</h4>
+<p>
+There is also a rake task that can be executed by running `rake
+datepicker:update` in your Rails apps root directory. This task will update
+your datepicker javascripts, stylesheets, and images. This is useful if you
+are using an old version of the plugin that had an older version of the
+Unobtrusive Date-Picker Widget Javascript library, or in the future when
+new version are release and I update the plugin with them.
+</p>
+<h3>Example:</h3>
+<pre>
+   &lt;% form_for :article, :url =&gt; { :action =&gt; @form_action, :id =&gt; @article } do |f| %&gt;
+   &lt;fieldset&gt;
+      ...
+      &lt;label&gt;Date: &lt;%= f.unobtrusive_datetime_picker :date %&gt;&lt;/label&gt;&lt;br /&gt;
+      ...
+   &lt;/fieldset&gt;
+   &lt;% end %&gt;
+</pre>
+<h3>Produces (Current date when output: 12/6/07):</h3>
+<pre>
+   &lt;form action=&quot;/form/create&quot; method=&quot;post&quot;&gt;
+      &lt;fieldset&gt;
+
+         &lt;label&gt;Date:
+              &lt;select id=&quot;article_date-dd&quot; name=&quot;article[date(3i)]&quot;&gt;
+               &lt;option value=&quot;1&quot;&gt;1&lt;/option&gt;
+               ...
+               &lt;option value=&quot;31&quot;&gt;31&lt;/option&gt;
+            &lt;/select&gt;
+            &lt;select id=&quot;article_date-mm&quot; name=&quot;article[date(2i)]&quot;&gt;
+               &lt;option value=&quot;1&quot;&gt;January&lt;/option&gt;
+               ...
+               &lt;option value=&quot;12&quot; selected=&quot;selected&quot;&gt;December&lt;/option&gt;
+            &lt;/select&gt;
+            &lt;select id=&quot;article_date&quot; name=&quot;article[date(1i)]&quot; class=&quot;split-date&quot;&gt;
+               &lt;option value=&quot;2002&quot;&gt;2002&lt;/option&gt;
+               ...
+               &lt;option value=&quot;2012&quot;&gt;2012&lt;/option&gt;
+            &lt;/select&gt;
+             &amp;nbsp;
+            &lt;select id=&quot;article_date_4i&quot; name=&quot;article[date(4i)][hour]&quot;&gt;
+               &lt;option value=&quot;1&quot;&gt;1&lt;/option&gt;
+               ...
+               &lt;option value=&quot;12&quot;&gt;12&lt;/option&gt;
+            &lt;/select&gt;
+             :
+            &lt;select id=&quot;article_date_5i&quot; name=&quot;article[date(5i)][minute]&quot;&gt;
+               &lt;option value=&quot;00&quot;&gt;00&lt;/option&gt;
+               ...
+               &lt;option value=&quot;59&quot;&gt;59&lt;/option&gt;
+            &lt;/select&gt;
+            &lt;select id=&quot;article_date_6i&quot; name=&quot;article[date(6i)][ampm]&quot;&gt;
+               &lt;option value=&quot;AMPM&gt;AMPM&lt;/option&gt;
+               &lt;option value=&quot;AMPM&gt;AMPM&lt;/option&gt;
+            &lt;/select&gt;
+         &lt;/label&gt;&lt;br /&gt;
+
+      &lt;/fieldset&gt;
+   &lt;/form&gt;
+</pre>
+<h2>LICENSE</h2>
+<p>
+See MIT-LICENSE file for copyright and licensing information for this
+plugin.
+</p>
+<p>
+Unobtrusive Date-Picker Widget is provided under the Creative Commons
+Attribution-ShareAlike 2.5 license (<a
+href="http://creativecommons.org/licenses/by-sa/2.5">creativecommons.org/licenses/by-sa/2.5</a>/)
+by frequency-decoder.com
+</p>
+
+    </div>
+
+
+   </div>
+
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>
