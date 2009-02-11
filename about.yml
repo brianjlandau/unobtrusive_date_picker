@@ -2,6 +2,6 @@ name: Unobtrusive Date-Picker Widget
 author: Brian Landau
 version: 2.0
 description: Helper to create a set of Date/Time selects that use the Unobtrusive Date Picker Widget.
-url: http://code.google.com/p/rails-unobtrusive-date-picker/
-install: http://rails-unobtrusive-date-picker.googlecode.com/svn/trunk/unobtrusive_date_picker
+url: http://github.com/brianjlandau/unobtrusive_date_picker/
+install: git@github.com:brianjlandau/unobtrusive_date_picker.git
 license: MIT

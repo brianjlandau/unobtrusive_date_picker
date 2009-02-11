@@ -18,7 +18,7 @@ application.
 
 == Install
 
-   `script/plugin install http://rails-unobtrusive-date-picker.googlecode.com/svn/trunk/unobtrusive_date_picker`
+   `script/plugin install git@github.com:brianjlandau/unobtrusive_date_picker.git`
 
 == Usage
 
