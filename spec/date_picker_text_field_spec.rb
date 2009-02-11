@@ -18,7 +18,7 @@ describe "a unobtrusive_date_text_picker with a stub ActiveRecord object" do
   end
 end
 
-describe "a unobtrusive_date_text_picker_tag with a stub ActiveRecord object" do
+describe "a unobtrusive_date_text_picker_tag with a date object" do
   it_should_behave_like "all date picker helpers"
 
   before(:each) do

@@ -7,6 +7,7 @@ require 'active_support'
 require 'action_view'
 require 'action_controller'
 require File.join(PLUGIN_ROOT, 'spec/tag_matcher.rb')
+require File.join(PLUGIN_ROOT, 'lib/12_hour_time.rb')
 require File.join(PLUGIN_ROOT, 'lib/unobtrusive_date_picker.rb')
 
 
@@ -18,6 +19,10 @@ ActionView::Helpers::AssetTagHelper.send :include, UnobtrusiveDatePicker::AssetT
 ActionController::Base.perform_caching = false
 ActionController::Base.consider_all_requests_local = true
 ActionController::Base.allow_forgery_protection    = false
+
+def get_meridian_integer(meridian)
+  ActionView::Helpers::DateTimeSelector.const_get(meridian.upcase.to_sym)
+end
 
 describe "all date picker helpers", :shared => true do
   include ActionView::Helpers::TagHelper

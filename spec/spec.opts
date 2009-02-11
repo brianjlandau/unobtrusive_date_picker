@@ -1,3 +1,4 @@
+-b
 --diff
 --color
 --format
@@ -8,4 +9,4 @@ active_support
 --require
 action_controller
 --require
-html/document
+action_controller/vendor/html-scanner

@@ -15,123 +15,81 @@
 # :enddoc:
 if defined? ActiveRecord
 class ActiveRecord::Base # :nodoc: all
-  def extract_callstack_for_multiparameter_attributes_with_ampm(pairs)
-    attributes = extract_callstack_for_multiparameter_attributes_without_ampm(pairs)
-    attributes.each do |name, values|
-      klass = (self.class.reflect_on_aggregation(name) ||
-      column_for_attribute(name)).klass
-      if klass == Time && values.length == 6
-        if values[5] == ActionView::Helpers::DateHelper::AM && values[3] == 12
-          values[3] = 0
-        elsif values[5] == ActionView::Helpers::DateHelper::PM && values[3] != 12
-          values[3] += 12
-        end
+  def instantiate_time_object_with_ampm(name, values)
+    if values.last < 0
+      ampm = values.pop
+      if ampm == ActionView::Helpers::DateTimeSelector::AM and values[3] == 12
+        values[3] = 0
+      elsif ampm == ActionView::Helpers::DateTimeSelector::PM and values[3] != 12
+        values[3] += 12
       end
     end
+
+    instantiate_time_object_without_ampm(name, values)
   end
 
-  alias_method_chain :extract_callstack_for_multiparameter_attributes, :ampm
+  alias_method_chain :instantiate_time_object, :ampm
 end
 end
 
-module ActionView::Helpers::DateHelper # :nodoc: all
-  AM = 'AM'
-  PM = 'PM'
+module ActionView::Helpers
+  class DateTimeSelector
+    POSITION = {
+      :year => 1, :month => 2, :day => 3, :hour => 4, :minute => 5,
+      :second => 6, :ampm => 7
+    }
+    # XXX would like to do this, but it's frozen
+    # POSITION[:ampm] = 7
 
-  def select_hour_with_ampm(datetime, options = {}, html_options = {})
-    options[:twelve_hour] or return select_hour_without_ampm(datetime, options, html_options)
+    # We give them negative values so can differentiate between normal
+    # date/time values. The way the multi param stuff works, from what I
+    # can see, results in a variable number of fields (if you tell it to
+    # include seconds, for example). So we expect the AM/PM field, if
+    # present, to be last and have a negative value.
+    AM = -1
+    PM = -2
+ 
+    def select_hour_with_ampm
+      unless @options[:twelve_hour]
+        return select_hour_without_ampm
+      end
 
-    val = _12_hour(datetime)
-
-    if options[:use_hidden]
-      return hidden_html(options[:field_name] || 'hour', val, options)
+      if @options[:use_hidden] || @options[:discard_hour]
+        build_hidden(:hour, hour12)
+      else
+        build_options_and_select(:hour, hour12, :start => 1, :end => 12)
+      end
     end
 
-    hour_options = []
-    1.upto(12) do |hour|
-      hour_options << ((val == hour) ?
-        content_tag(:option, leading_zero_on_single_digits(hour), :value => leading_zero_on_single_digits(hour), :selected => "selected") :
-        content_tag(:option, leading_zero_on_single_digits(hour), :value => leading_zero_on_single_digits(hour))
-      )
-      hour_options << "\n"
+    alias_method_chain :select_hour, :ampm
+
+    def select_ampm
+      selected = hour < 12 ? AM : PM
+
+      # XXX i18n? 
+      label = { AM => 'AM', PM => 'PM' }
+      ampm_options = []
+      [AM, PM].each do |meridiem|
+        option = { :value => meridiem }
+        option[:selected] = "selected" if selected == meridiem
+        ampm_options << content_tag(:option, label[meridiem], option) + "\n"
+      end
+      build_select(:ampm, ampm_options.join)
     end
 
-    select_html(options[:field_name] || 'hour', hour_options, options, html_options)
-  end
+    private
 
-  alias_method_chain :select_hour, :ampm
-
-
-  def select_ampm(datetime, options = {}, html_options = {})
-    ampm = [AM, PM]
-    val = datetime ? (ampm.include?(datetime) ? datetime : datetime.strftime("%p")) : ''
-
-    if options[:use_hidden]
-      return hidden_html(options[:field_name] || 'ampm', val, options)
+    def build_selects_from_types_with_ampm(order)
+      order += [:ampm] if @options[:twelve_hour] and !order.include?(:ampm)
+      build_selects_from_types_without_ampm(order)
     end
 
-    ampm_options = []
-    ampm.each do |meridiem|
-      selected = (meridiem == val) ? ' selected="selected"' : ''
-      ampm_options << ((meridiem == val) ? 
-        content_tag(:option, meridiem, :value => meridiem, :selected => "selected") :
-        content_tag(:option, meridiem, :value => meridiem)
-      )
-      ampm_options << "\n"
-    end
+    alias_method_chain :build_selects_from_types, :ampm
 
-    select_html(options[:field_name] || 'ampm', ampm_options, options, html_options)
-  end
-
-  def select_time_with_ampm(datetime = Time.now, options = {}, html_options = {})
-    select = select_time_without_ampm(datetime, options, html_options)
-    select << select_ampm(datetime, options, html_options) if options[:twelve_hour]
-    select
-  end
-
-  alias_method_chain :select_time, :ampm
-
-  private
-
-  def _12_hour(datetime)
-    return '' if datetime.blank?
-
-    hour = datetime.kind_of?(Fixnum) ? datetime : datetime.hour
-    hour = 12 if hour == 0
-    hour -= 12 if hour > 12
-
-    return hour
-  end
-end
-
-class ActionView::Helpers::InstanceTag # :nodoc: all
-  def date_or_time_select_with_ampm(options, html_options = {})
-    options[:twelve_hour] and not options[:discard_hour] or
-    return date_or_time_select_without_ampm(options, html_options)
-
-    defaults = { :discard_type => true }
-    options = defaults.merge(options)
-
-    datetime = value(object)
-    datetime ||= default_time_from_options(options[:default]) unless options[:include_blank]
-
-    date_or_time_select_without_ampm(options, html_options) +
-    select_ampm(datetime, options_with_prefix(6, options.merge(:use_hidden => options[:discard_hour], :string => true)))
-  end
-
-  alias_method_chain :date_or_time_select, :ampm
-
-  def options_with_prefix_with_ampm(position, options)
-    prefix = "#{@object_name}"
-    if options[:index]
-      prefix << "[#{options[:index]}]"
-    elsif @auto_index
-      prefix << "[#{@auto_index}]"
-    end
-    if options[:string]
-      options.merge(:prefix => "#{prefix}[#{@method_name}(#{position}s)]")
-    else
-      options.merge(:prefix => "#{prefix}[#{@method_name}(#{position}i)]")
+    def hour12
+      h12 = hour % 12
+      h12 = 12 if h12 == 0
+      return h12
     end
   end
 end

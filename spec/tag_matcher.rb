@@ -2,7 +2,7 @@ require 'rubygems'
 require 'active_support'
 require 'action_controller'
 require 'rexml/document'
-require 'html/document'
+require 'action_controller/vendor/html-scanner'
 
 module TagMatcher
    

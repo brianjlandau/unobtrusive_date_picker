@@ -4,30 +4,30 @@ describe UnobtrusiveDatePicker, "with no data passed to tag helper" do
    it_should_behave_like "all date picker helpers"
    
    before(:each) do
-      @default_id = ActionView::Helpers::DateHelper::DEFAULT_PREFIX
+      @default_id = ActionView::Helpers::DateTimeSelector::DEFAULT_PREFIX
       @date = Date.today
       @datepicker = unobtrusive_date_picker_tags(nil, {:include_blank => true})
    end
    
    it "should have default prefix for year id" do
-      default_name = @default_id + "[#{UnobtrusiveDatePicker::UnobtrusiveDatePickerHelper::DATEPICKER_DEFAULT_NAME_ID_SUFFIXES[:year][:name]}]"
+      default_name = @default_id + "[#{UnobtrusiveDatePicker::DATEPICKER_DEFAULT_NAME_ID_SUFFIXES[:year][:name]}]"
       @datepicker.should include_tag(:select, :attributes => {:id => @default_id, :name => default_name})
    end
    
    it "should have 'split-date' in class on year" do
-      default_name = @default_id + "[#{UnobtrusiveDatePicker::UnobtrusiveDatePickerHelper::DATEPICKER_DEFAULT_NAME_ID_SUFFIXES[:year][:name]}]"
+      default_name = @default_id + "[#{UnobtrusiveDatePicker::DATEPICKER_DEFAULT_NAME_ID_SUFFIXES[:year][:name]}]"
       @datepicker.should include_tag(:select, :attributes => {:class => 'split-date', :name => default_name})
    end
    
    it "should have default prefix and 'mm' on month id" do
       month_id = @default_id + '-mm'
-      month_name = @default_id + "[#{UnobtrusiveDatePicker::UnobtrusiveDatePickerHelper::DATEPICKER_DEFAULT_NAME_ID_SUFFIXES[:month][:name]}]"
+      month_name = @default_id + "[#{UnobtrusiveDatePicker::DATEPICKER_DEFAULT_NAME_ID_SUFFIXES[:month][:name]}]"
       @datepicker.should include_tag(:select, :attributes => {:id => month_id, :name => month_name})
    end
    
    it "should have default prefix and 'dd' on day id" do
       day_id = @default_id + '-dd'
-      day_name = @default_id + "[#{UnobtrusiveDatePicker::UnobtrusiveDatePickerHelper::DATEPICKER_DEFAULT_NAME_ID_SUFFIXES[:day][:name]}]"
+      day_name = @default_id + "[#{UnobtrusiveDatePicker::DATEPICKER_DEFAULT_NAME_ID_SUFFIXES[:day][:name]}]"
       @datepicker.should include_tag(:select, :attributes => {:id => day_id, :name => day_name})
    end
    

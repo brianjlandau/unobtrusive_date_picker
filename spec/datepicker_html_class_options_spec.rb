@@ -112,7 +112,7 @@ describe UnobtrusiveDatePicker, "with :range_low option passed :tomorrow" do
    it "should have the correct class" do
       year_id = 'date_model_date'
       year_name = 'date_model[date(1i)]'
-      tomorrow = Date.tomorrow.strftime(UnobtrusiveDatePicker::UnobtrusiveDatePickerHelper::RANGE_DATE_FORMAT)
+      tomorrow = Date.tomorrow.strftime(UnobtrusiveDatePicker::RANGE_DATE_FORMAT)
       range_low = "range-low-#{tomorrow}"
       
       @datepicker_html.should include_tag(:select, :attributes => {:id => year_id, :name => year_name, :class => "#{range_low} split-date"})
@@ -136,7 +136,7 @@ describe UnobtrusiveDatePicker, "with :range_high option passed a string" do
    it "should have the correct class" do
       year_id = 'date_model_date'
       year_name = 'date_model[date(1i)]'
-      range_date = Date.parse(@range_high).strftime(UnobtrusiveDatePicker::UnobtrusiveDatePickerHelper::RANGE_DATE_FORMAT)
+      range_date = Date.parse(@range_high).strftime(UnobtrusiveDatePicker::RANGE_DATE_FORMAT)
       html_class = "range-high-#{range_date}"
       
       @datepicker_html.should include_tag(:select, :attributes => {:id => year_id, :name => year_name, :class => "#{html_class} split-date"})
@@ -160,7 +160,7 @@ describe UnobtrusiveDatePicker, "with :range_high option passed a Date object" d
    it "should have the correct class" do
       year_id = 'date_model_date'
       year_name = 'date_model[date(1i)]'
-      range_date = @range_high.strftime(UnobtrusiveDatePicker::UnobtrusiveDatePickerHelper::RANGE_DATE_FORMAT)
+      range_date = @range_high.strftime(UnobtrusiveDatePicker::RANGE_DATE_FORMAT)
       html_class = "range-high-#{range_date}"
       
       @datepicker_html.should include_tag(:select, :attributes => {:id => year_id, :name => year_name, :class => "#{html_class} split-date"})

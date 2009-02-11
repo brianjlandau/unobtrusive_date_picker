@@ -55,8 +55,8 @@ describe UnobtrusiveDatePicker, "with a stub ActiveRecord object" do
       
       @datepicker_html.should include_tag(:select, :attributes => {:id => hour_id, :name => hour_name}, 
                                                    :child => {:tag => 'option', 
-                                                              :attributes => {:value => @time.strftime("%I").to_i.to_s, :selected => 'selected'},
-                                                              :content => @time.strftime("%I").to_i.to_s})
+                                                              :attributes => {:value => sprintf("%02d", @time.strftime("%I").to_i), :selected => 'selected'},
+                                                              :content => sprintf("%02d", @time.strftime("%I").to_i)})
    end
    
    it "should select the minute from model object attribute" do
@@ -70,12 +70,12 @@ describe UnobtrusiveDatePicker, "with a stub ActiveRecord object" do
    end
    
    it "should select the meridian from model object attribute" do
-      meridian_id = 'datetime_model_datetime_6s'
-      meridian_name = 'datetime_model[datetime(6s)]'
+      meridian_id = 'datetime_model_datetime_7i'
+      meridian_name = 'datetime_model[datetime(7i)]'
       
       @datepicker_html.should include_tag(:select, :attributes => {:id => meridian_id, :name => meridian_name}, 
                                                    :child => {:tag => 'option', 
-                                                              :attributes => {:value => @time.strftime("%p"), :selected => 'selected'},
+                                                              :attributes => {:value => get_meridian_integer(@time.strftime("%p")), :selected => 'selected'},
                                                               :content => @time.strftime("%p")})
    end
    
@@ -117,8 +117,8 @@ describe UnobtrusiveDatePicker, "with a minute step and month numbers options sp
       (0..59).step(@step) do |minute|
          @datepicker_html.should include_tag(:select, :attributes => {:id => minute_id, :name => minute_name}, 
                                                       :child => {:tag => 'option', 
-                                                                 :attributes => {:value => leading_zero_on_single_digits(minute).to_s},
-                                                                 :content => leading_zero_on_single_digits(minute).to_s})
+                                                                 :attributes => {:value => sprintf("%02d", minute)},
+                                                                 :content => sprintf("%02d", minute)})
       end
    end
    
