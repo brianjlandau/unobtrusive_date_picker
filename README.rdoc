@@ -18,7 +18,7 @@ application.
 
 == Install
 
-   `script/plugin install git@github.com:brianjlandau/unobtrusive_date_picker.git`
+   `script/plugin install git://github.com/brianjlandau/unobtrusive_date_picker.git`
 
 == Usage
 
