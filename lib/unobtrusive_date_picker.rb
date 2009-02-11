@@ -53,7 +53,7 @@ module UnobtrusiveDatePicker
     
     def unobtrusive_datetime_picker_tags(datetime = Time.current, options = {}, html_options = {})
       datetime ||= Time.current
-      DateTimePickerSelector.new(datetime, options, html_options).select_datetime
+      DateTimePickerSelector.new(datetime, options.merge(:twelve_hour => true), html_options).select_datetime
     end
 
     def unobtrusive_date_picker_tags(date = Date.current, options = {}, html_options = {})
@@ -208,18 +208,69 @@ module UnobtrusiveDatePicker
     include ActionView::Helpers::FormTagHelper
     include OptionParser
     
-    def initialize(datetime, options = {}, html_options = {})
-      super
-      @options.reverse_merge!(:twelve_hour => true)
-    end
+    POSITION = {
+      :year => 1, :month => 2, :day => 3, :hour => 4, :minute => 5,
+      :second => 6, :ampm => 7
+    }
+    # XXX would like to do this, but it's frozen
+    # POSITION[:ampm] = 7
+
+    # We give them negative values so can differentiate between normal
+    # date/time values. The way the multi param stuff works, from what I
+    # can see, results in a variable number of fields (if you tell it to
+    # include seconds, for example). So we expect the AM/PM field, if
+    # present, to be last and have a negative value.
+    AM = -1
+    PM = -2
     
     def text_date_picker(name)
       value = format_date_value_for_text_field(@datetime, @options[:format], @options[:divider])
       @html_options[:class] = get_html_classes_for_datepicker(@options, @html_options[:class])
       text_field_tag(name, value, @html_options)
     end
+ 
+    def select_hour_with_ampm
+      unless @options[:twelve_hour]
+        return select_hour_without_ampm
+      end
+
+      if @options[:use_hidden] || @options[:discard_hour]
+        build_hidden(:hour, hour12)
+      else
+        build_options_and_select(:hour, hour12, :start => 1, :end => 12)
+      end
+    end
+
+    alias_method_chain :select_hour, :ampm
+
+    def select_ampm
+      selected = hour < 12 ? AM : PM
+
+      # XXX i18n? 
+      label = { AM => 'AM', PM => 'PM' }
+      ampm_options = []
+      [AM, PM].each do |meridiem|
+        option = { :value => meridiem }
+        option[:selected] = "selected" if selected == meridiem
+        ampm_options << content_tag(:option, label[meridiem], option) + "\n"
+      end
+      build_select(:ampm, ampm_options.join)
+    end
     
     private
+      def build_selects_from_types_with_ampm(order)
+        order += [:ampm] if @options[:twelve_hour] and !order.include?(:ampm)
+        build_selects_from_types_without_ampm(order)
+      end
+
+      alias_method_chain :build_selects_from_types, :ampm
+
+      def hour12
+        h12 = hour % 12
+        h12 = 12 if h12 == 0
+        return h12
+      end
+    
       def build_select(type, select_options_as_html)
         select_options = @html_options.merge(
           :id => input_id_from_type(type, @html_options[:id]),
@@ -290,7 +341,7 @@ module ActionView # :nodoc: all
       end
 
       def to_datepicker_datetime_select_tag(options = {}, html_options = {})
-        datepicker_selector(options, html_options).select_datetime
+        datepicker_selector(options.merge(:twelve_hour => true), html_options).select_datetime
       end
 
       def to_datepicker_text_tag(options = {}, html_options = {})

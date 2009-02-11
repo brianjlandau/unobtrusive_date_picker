@@ -21,7 +21,7 @@ ActionController::Base.consider_all_requests_local = true
 ActionController::Base.allow_forgery_protection    = false
 
 def get_meridian_integer(meridian)
-  ActionView::Helpers::DateTimeSelector.const_get(meridian.upcase.to_sym)
+  UnobtrusiveDatePicker::DateTimePickerSelector.const_get(meridian.upcase.to_sym)
 end
 
 describe "all date picker helpers", :shared => true do
