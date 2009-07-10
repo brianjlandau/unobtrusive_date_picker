@@ -34,3 +34,21 @@ describe "a unobtrusive_date_text_picker_tag with a date object" do
     @date, @datepicker_html = nil
   end
 end
+
+describe "a unobtrusive_date_text_picker with a ActiveRecord attribute with a nil value" do
+  it_should_behave_like "all date picker helpers"
+
+  before(:each) do
+    @date = nil
+    @date_model = stub('DateModel', :date => @date, :id => 1)
+    @datepicker_html = unobtrusive_date_text_picker(:date_model, :date, :format => 'd-m-y', :divider => 'dash')
+  end
+
+  it "should have all the correct classes and attributes" do
+    @datepicker_html.should selector_tag("input#date_model_date.format-d-m-y.divider-dash[type='text'][value='']")
+  end
+
+  after(:each) do
+    @date, @date_model, @datepicker_html = nil
+  end
+end
