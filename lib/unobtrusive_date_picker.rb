@@ -104,7 +104,7 @@ module UnobtrusiveDatePicker
     def format_date_value_for_text_field(value, format, divider_option)
       divider = DATEPICKER_DIVIDERS[parse_divider_option(divider_option)]
       format_string = format.downcase.gsub(/(m|d)/, '%\1').gsub(/y/, '%Y').gsub('-', divider)
-      value.strftime(format_string)
+      value.nil? ? '' : value.strftime(format_string)
     end
     
     def get_html_classes_for_datepicker(options, html_options_class, extra_class = nil)
