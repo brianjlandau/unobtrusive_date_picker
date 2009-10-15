@@ -1,5 +1,9 @@
 = Unobtrusive Date-Picker Widget Plugin
 
+== THIS PROJECT IS NO LONGER MAINTAINED -10/15/09
+
+The latest release of the Unobtrusive Date-Picker Widget Javascript library (http://frequency-decoder.com/2009/09/09/unobtrusive-date-picker-widget-v5) makes this plugin unnecessary so I've decided to no longer maintain it.
+
 This is a helper for creating a date or date-time picker that uses the
 Unobtrusive Date-Picker Widget(sic)
 (http://www.frequency-decoder.com/2006/10/02/unobtrusive-date-picker-widgit-update)
